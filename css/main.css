@@ -1321,9 +1321,14 @@ pre code {
   display: inline-block;
 }
 .site-author-image {
+  border-radius: 50%;
+  transition: 2s all;
   border: 1px solid #eee;
   max-width: 120px;
   padding: 2px;
+}
+.site-author-image:hover {
+  transform: rotateZ(360deg);
 }
 .site-author-name {
   color: var(--text-color);
@@ -2201,6 +2206,10 @@ pre code {
 .post-reward div span {
   display: block;
 }
+.post-reward div:hover span {
+  animation: next-roll 0.1s infinite linear;
+  pointer-events: none;
+}
 .post-reward img {
   display: inline-block;
   margin: 0.8em 2em 0 2em;
@@ -2238,6 +2247,13 @@ pre code {
   to {
     transform: rotateZ(-30deg);
   }
+}
+.post-body p a {
+  color: #345;
+  border-bottom: none;
+}
+.post-body p a:hover {
+  color: #f00;
 }
 .category-all-page .category-all-title {
   text-align: center;
