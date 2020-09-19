@@ -189,7 +189,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -277,7 +277,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-09-19 09:49:05 / 修改时间：09:48:15" itemprop="dateCreated datePublished" datetime="2020-09-19T09:49:05+08:00">2020-09-19</time>
+      <time title="创建时间：2020-09-19 09:49:05 / 修改时间：09:52:24" itemprop="dateCreated datePublished" datetime="2020-09-19T09:49:05+08:00">2020-09-19</time>
     </span>
 
   
@@ -294,127 +294,14 @@
 <h3 id="1-饿汉式单例"><a href="#1-饿汉式单例" class="headerlink" title="1.  饿汉式单例"></a>1.  饿汉式单例</h3><ol>
 <li><p>饿汉式单例：一上来初始化的时候就会加载内存中的所有东西，可能会造成内存的浪费</p>
 <p><img src="C:\Users\如果answer\Pictures\images\QQ图片20200919082402.png" alt="QQ图片20200919082402"></p>
-</li>
-</ol>
-<h3 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h3><ol>
-<li><p>懒汉式单例：什么时候使用什么时候创建对象。但是只是在单线程下单例。多线程下就可能会出现异常，就不是单例了。需要加所来解决多线程并发问题。</p>
-<p><img src="C:\Users\如果answer\Pictures\images\QQ图片20200919082402.png" alt="QQ图片20200919082402"></p>
-</li>
-</ol>
-<ol start="2">
-<li><p>多线程下就会出现错误。</p>
-<p><img src="C:\Users\如果answer\Pictures\images\QQ截图20200919083505.png" alt="QQ截图20200919083505"></p>
-<p><img src="C:\Users\如果answer\Pictures\images\QQ截图20200919083452.png" alt="QQ截图20200919083452"></p>
-</li>
-</ol>
-<h3 id="2-双重检测锁模式"><a href="#2-双重检测锁模式" class="headerlink" title="2. 双重检测锁模式"></a>2. 双重检测锁模式</h3><ol>
-<li><p>因为在多线程高并发下，懒汉式单例会出现异常，所以我们需要对当前对象进行加所，保证这个类唯一。<img src="C:\Users\如果answer\Pictures\images\QQ截图20200919084721.png" alt="QQ截图20200919084721"></p>
-</li>
-<li><p>为什么进行两次判断当前对象是否为空？</p>
-<ol>
-<li><p>第一次判断是为了提高运行效率。比如，线程1，2，3都要调用getInstace函数。当线程1走完了内层判断，对象实例化了，线程3也调用了getInstace函数，如果没有加外层的判断线程3还是要继续等待线程2的完成，而加上外层判断，就不需要等待了，直接返回了实例化的对象。</p>
-</li>
-<li><p>第二次判断是为了只有一个实例化对象。因为可能会有多个线程一起进入同步块外的 if，如果在同步块内不进行二次检验的话就会生成多个实例了。</p>
-</li>
-</ol>
-</li>
-<li><p>双重检测锁解决了懒汉式单例在多线程下的异常。但依然存在着问题，有者安全隐患。因为这不是一个原子性操作。不是原子性操作，在初始化对象时，会经过一下三步。</p>
-<pre><code> 1. 分配内存空间
- 2. 执行构造方法，初始化这个对象
- 3. 将对象指向这个内存空间</code></pre>
-</li>
-<li><p>这里存在着指令重排的可能。正常情况下是按照123的顺序进行，但指令重排可能会132，这样就会操作，一个空对象指向内存空间的问题，线程在执行getInstace函数是，会直接返回null一个空对象。</p>
-</li>
-<li><p>解决方法，避免对象进行指令重排。在声明对象时加上volatile</p>
-<p> <img src="C:\Users\如果answer\Pictures\images\QQ截图20200919090604.png" alt="QQ截图20200919090604"></p>
-</li>
-</ol>
-<h3 id="3-静态内部类"><a href="#3-静态内部类" class="headerlink" title="3. 静态内部类"></a>3. 静态内部类</h3><p><img src="C:\Users\如果answer\Pictures\images\静态内部类.png" alt="静态内部类"></p>
-<ol>
-<li><p>这个静态内部类 也存在着隐患。即上面的饿汉式，懒汉式也存着相同的安全隐患。—- 反射</p>
-</li>
-<li><p>通过反射可以破解单例模式，因为反射回无视私有的构造器。  下面拿懒汉式举例</p>
-<p><img src="C:\Users\如果answer\Pictures\images\反射.png" alt="反射"></p>
-<p>结果：</p>
-<p><img src="C:\Users\如果answer\Pictures\images\结果.png" alt="结果"></p>
-</li>
-</ol>
-<p>​      这就破解了单例模式。通过破坏私有化构造设置，在通过构造器创建对象。</p>
-<ol start="3">
-<li><p>这里可以在构造器使用三重检测锁。但是若不使用这个对象创建实例，直接使用反射。也会被破解。这里可以再加一个私有静态的布尔成员变量 在构造器中进行判断值，如果使用过构造器就改变布尔值。第二次构造的时候返回错误。但这里依然可以被反射所破解，将私有属性权限也进行破化。</p>
-</li>
-<li><p>可以通过使用枚举来避免反射破解单例</p>
-<h3 id="4-枚举"><a href="#4-枚举" class="headerlink" title="4. 枚举"></a>4. 枚举</h3></li>
-<li><p>枚举本身 也是一个类 </p>
-</li>
-<li><p>为什么反射无法破坏枚举？ 因为通过<strong>反编译</strong>我们可以看到 枚举这个类本使没有无参构造，只有有参构造。</p>
-<p><img src="C:\Users\如果answer\Pictures\images\反编译.png" alt="反编译"></p>
-<p>这里只有一个有参构造器。所以无法通过反射进行破坏。</p>
-</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/09/15/%E5%88%86%E9%A1%B5%E7%9A%84%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="答案">
-      <meta itemprop="description" content="stay simple,stay naive">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="showanswer">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/15/%E5%88%86%E9%A1%B5%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">分页的实现</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-09-15 15:12:18" itemprop="dateCreated datePublished" datetime="2020-09-15T15:12:18+08:00">2020-09-15</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/09/19/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E6%8E%A2%E7%B4%A2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
