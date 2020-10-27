@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"showanswer.github.io","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+
+  <meta name="description" content="![springcloud](C:\Users\如果answer\Pictures\Camera Roll\springcloud.png)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springcloud之服务注册中心 Eureka">
+<meta property="og:url" content="http://showanswer.github.io/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/index.html">
+<meta property="og:site_name" content="showanswer">
+<meta property="og:description" content="![springcloud](C:\Users\如果answer\Pictures\Camera Roll\springcloud.png)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027191938780.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027193327010.png">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/Eureka-client的相关依赖.jpg">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027195444167.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027201155937.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027201535231.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027201639975.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027204757749.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027205341185.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027205451228.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027205630479.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027210141796.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027210217399.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027210707722.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027210754093.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027211008514.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027211015203.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027211928463.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027211934335.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027212322238.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027212710619.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027212827672.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027212938614.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213019404.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213213145.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213217991.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213358517.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213403947.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213534910.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213702768.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213717831.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213724076.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213756281.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027213919223.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027214102289.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027214851871.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027214907399.png">
+<meta property="article:published_time" content="2020-10-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-27T14:15:25.743Z">
+<meta property="article:author" content="答案">
+<meta property="article:tag" content="springcloud">
+<meta property="article:tag" content="Eureka">
+<meta property="article:tag" content="服务注册中心">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201027191938780.png">
+
+
+<link rel="canonical" href="http://showanswer.github.io/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>springcloud之服务注册中心 Eureka | showanswer</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/showanswer" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">showanswer</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#Eureka-%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">1.</span> <span class="nav-text">Eureka 服务注册中心</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#CAP-%E5%AE%9A%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">CAP 定理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="答案"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">答案</p>
+  <div class="site-description" itemprop="description">stay simple,stay naive</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/showanswer" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;showanswer" rel="noopener" target="_blank"><i class="GitHub fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/showanswer" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;showanswer" rel="noopener" target="_blank"><i class="Gitee fa-fw"></i>Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/343755857" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;343755857" rel="noopener" target="_blank"><i class="bilibili fa-fw"></i>bilibili</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="答案">
+      <meta itemprop="description" content="stay simple,stay naive">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="showanswer">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          springcloud之服务注册中心 Eureka
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-10-27 00:00:00 / 修改时间：22:15:25" itemprop="dateCreated datePublished" datetime="2020-10-27T00:00:00+08:00">2020-10-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/" class="post-meta-item leancloud_visitors" data-flag-title="springcloud之服务注册中心 Eureka" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>![springcloud](C:\Users\如果answer\Pictures\Camera Roll\springcloud.png)</p>
+ <a id="more"></a>
+
+<h6 id="Eureka-服务注册中心"><a href="#Eureka-服务注册中心" class="headerlink" title="Eureka 服务注册中心"></a>Eureka 服务注册中心</h6><ol>
+<li><p>Eureka基础</p>
+<p>1.1  什么是服务治理：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027191938780.png" alt="image-20201027191938780"></p>
+</li>
+</ol>
+<p>​    1.2  什么是服务注册<br>​      Eureka采用了CS的设计架构，Eureka Server作为服务注册功能的服务器，它是服务注册中心。而系统中的其他微服务，使用Eureka的客户端连接到Eureka Server并维持心跳连接。这样系统的维护人员就可以通过Eureka Server来监控系统中各个微服务是否正常运行。<br>   在服务注册与发现中，有一个服务注册中心。当服务器启动的时候，会把当前自己的服务器信息，比如： 服务地址通讯地址等以别名的方式注册到该服务注册中心上。另一方面（消费者|服务提供者），以该别名的方式去注册中心上获取到实际的通讯地址，然后实现本地的RPC调用RPC远程调用框架核心思想：在注册中心，因为使用注册中心管理每个服务与服务之间的一个依赖关系。在热河RPC远程调用框架中，都会有一个注册中心（存放服务地址相关信息（接口地址））。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027193327010.png" alt="image-20201027193327010"></p>
+<p>   1.3   Eureka的两大组件：eureka server 和 eureka client<br>    <em>Eureka Server</em> 提供服务注册服务<br>     各个微服务节点通过配置启动后，会在EurekaServer中进行注册，这样会在EurekaServer中进行注册中的注册表会存储所有可用的服务节点信息，服务节点的信息可以在界面中直观看到。<br>     Eureka Server本身也是一个服务，默认情况下会自动注册到Eureka注册中心。如果搭建<strong>单机版的Eureka Server注册中心，则需要配置取消Eureka Server的自动注册逻辑</strong>。毕竟当前服务注册到当前服务代表的注册中心中是一个说不通的逻辑。</p>
+<p>​     <em>Eureka Client</em> 通过服务注册中心进行访问<br>​      这是一个客户端，是一个Java客户端。用于简化Eureka Server的交互，客户端同时<strong>具备一个内置的，使用轮询（round-robin）符在算法的负载均衡器</strong>。在应用启动后，将会向Eureka Server在多个心跳周期内没有接收到每个节点的心跳，则服务注册中心就会移除这个节点(默认90秒)。<br>​      <img src="C:\Users\如果answer\Pictures\images\Eureka-client的相关依赖.jpg" alt="Eureka-client的相关依赖"></p>
+<p>  <em>Application Service</em>：服务提供方，是注册到Eureka Server中的服务。<br>  <em>Application Client</em>：  服务消费方，通过Eureka Server发现服务，并消费。在这里，Application Service和Application Client不是绝对上的定义，因为Provider在提供服务的同时，也可以消费其他Provider提供的服务；Consumer在消费服务的同时，也可以提供对外服务。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027195444167.png" alt="image-20201027195444167"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Register(服务注册)：把自己的IP和端口注册给Eureka。</span><br><span class="line">Renew(服务续约)：发送心跳包，每30秒发送一次。告诉Eureka自己还活着。</span><br><span class="line">Cancel(服务下线)：当provider关闭时会向Eureka发送消息，把自己从服务列表中删除。防止consumer调用到不存在的服务。</span><br><span class="line">Get Registry(获取服务注册列表)：获取其他服务列表。</span><br><span class="line">Replicate(集群中数据同步)：eureka集群中的数据复制与同步。</span><br><span class="line">Make Remote Call(远程调用)：完成服务的远程调用。</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>单机Eureka构建步骤</p>
+<p>2.1  IDEA生成EurekaServer端服务注册中心   类似物业公司：</p>
+<p>​        2.1.1 新建一个微服务：即新建一个model ： cloud-eureka-server7001 </p>
+<p>​           1.  pom.xml文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--eureka-server--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!--自定义api通用包--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.atguigu.springcloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud-api-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;project.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!--web服务两件套--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--一般为通用配置--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027201155937.png" alt="image-20201027201155937"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--新版本当前版本--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka- server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="2">
+<li><p>写yml文件：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">7001</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">eureka7001.com</span>  <span class="comment">#eureka服务端的实例名称</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">false</span> <span class="comment">#表示 不向服务中心注册自己</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">false</span>    <span class="comment">#表示自己就是注册中心 用于维护服务实例  不用去检索服务不用自己注册自己</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="comment">#设置Eureka Server 交互的地址查询服务和注册服务都需要依赖这个地址</span></span><br><span class="line">      <span class="comment"># 集群版：defaultZone是列表的意思：若有3台 就把其他两台写上逗号隔开  若是单机版：就写上自己的地址</span></span><br><span class="line">      <span class="comment">#defaultZone: http://eureka7002.com:7002/eureka/</span></span><br><span class="line">   <span class="attr">defaultZone:</span> <span class="string">http://eureka7001.com:7001/eureka/</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">#server:  #这个是  关闭eureka的自我保护机制   90秒内收不到请求 立马移除服务</span></span><br><span class="line">   <span class="comment"># enable-self-preservation: false</span></span><br><span class="line">   <span class="comment"># eviction-interval-timer-in-ms:90000 90秒内收不到请求</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这里需要在本地的 C:\Windows\System32\drivers\etc目录下：hosts文件中</p>
+<blockquote>
+<p>127.0.0.1 eureka7001.com<br>127.0.0.1 eureka7002.com</p>
+</blockquote>
+</li>
+<li><p>主启动类：<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027201535231.png" alt="image-20201027201535231"></p>
+</li>
+</ol>
+<p>​       测试：<a target="_blank" rel="noopener" href="http://localhost:7001/">http://localhost:7001/</a>   。启动后点击页面查看。但因为当前没有服务注入：No application available没有服务被发现  因为没有注册服务进来当前不可能有服务被发现</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027201639975.png" alt="image-20201027201639975"></p>
+<p>2.2 EurekaClient端cloud-provider-payment8001  （<strong>提示：生产端和消费端的 业务类都没有展示出来，这个可以自己链接数据库做实验。</strong>）<br>    <strong>将注册进EurekaServer成为服务提供者provider,类似于尚硅谷学校对外提供授课服务</strong></p>
+<ol>
+<li><p>写pom文件.这里要添加这个 添加eureka依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--eureka-client--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>写yml文件。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8001</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-payment-service</span></span><br><span class="line">   <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">com.alibaba.druid.pool.DruidDataSource</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/db2019?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8&amp;useSSL=false</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">888888</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="attr">mapper-locations:</span> <span class="string">classpath:mapper/*.xml</span></span><br><span class="line">  <span class="attr">type-aliases-package:</span> <span class="string">com.atguigu.springcloud.entities</span></span><br><span class="line"></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="comment">#表示是否将自己注册进EurekaService 默认为true</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#是否从EurekaServer中抓取已经注册的信息  默认为true  单节点无所谓  集群必须设置为true才能配合ribbon使用负载均衡</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:7001/eureka</span></span><br><span class="line">      <span class="comment">#defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  #集群版</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">instance-id:</span> <span class="string">payment8001</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span>   <span class="comment">#访问路径可以显示IP地址</span></span><br><span class="line">    <span class="comment">#Eureka客户端向服务端发送心跳的时间间隔，单位为秒 （默认为30秒）</span></span><br><span class="line">    <span class="comment">#lease-renewal-interval-in-seconds: 30</span></span><br><span class="line">    <span class="comment">#Eureka服务端在收到最后一次心跳后等待时间的上线(默认为90秒)，单位为秒，超时就移除该服务</span></span><br><span class="line">    <span class="comment">#lease-expiration-duration-in-seconds: 90    </span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>主启动类：  <code>@EnableEurekaClient</code>   加上该注解</li>
+</ol>
+</li>
+</ol>
+<p>2.3 EurekaClient端cloud-consumer-order80<br><strong>将注册进EurekaServer成为服务消费者consumer,类似于尚硅谷学校上课消费的各位同学</strong></p>
+<ol>
+<li><p>写pom文件.这里要添加这个 添加eureka依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--eureka-client--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>新老版本对比：别再使用老版本</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027204757749.png" alt="image-20201027204757749"></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-order-service</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="comment">#表示是否将自己注册进EurekaService 默认为true</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#是否从EurekaServer中抓取已经注册的信息  默认为true  单节点无所谓  集群必须设置为true才能配合ribbon使用负载均衡</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:7001/eureka</span></span><br><span class="line">      <span class="comment">#defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka   #集群版</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">instance-id:</span> <span class="string">order80</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span>   <span class="comment">#访问路径可以显示IP地址    </span></span><br></pre></td></tr></table></figure>
+
+<p>测试：先启动EurekaServer，即启动项目 cloud-eureka-server7001作为服务注册中心。 再启动cloud-provider-payment8001作为生产者，最后启动cloud-consumer-order80作为消费者。  开启顺序需要注意！</p>
+<p>查看<a target="_blank" rel="noopener" href="http://localhost:7001/">http://localhost:7001/</a> 。查看是否成功注册进去。  这里Application名称就是之前我们所配置的项目名称。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027205341185.png" alt="image-20201027205341185"></p>
+<p>Eureka有者自我保护机制：并非出错。我们也可以取消这个机制，这里就不多做叙述，可以上网搜索了解。<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027205451228.png" alt="image-20201027205451228"></p>
+<ol start="3">
+<li><p>集群Eureka构建步骤</p>
+<p>3.1  Eureka集群原理说明</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027205630479.png" alt="image-20201027205630479"></p>
+<p>​                 解决办法: 搭建Eureka注册中心集群,实现负载均衡+故障容错</p>
+</li>
+</ol>
+<p>​     3.2    新建服务注册中心 cloud-eureka-server7002 。这里可以参考之前的cloud-eureka-server7001。</p>
+<p>​         7001和7002的pom文件一样。我们只需在yml文件中做修改即可。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210141796.png" alt="image-20201027210141796"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210217399.png" alt="image-20201027210217399"></p>
+<p>  这里需要在本地的 C:\Windows\System32\drivers\etc目录下：hosts文件中</p>
+<blockquote>
+<p>127.0.0.1 eureka7001.com<br>127.0.0.1 eureka7002.com</p>
+</blockquote>
+<p>将支付服务8001微服务发布到上面2台Eureka集群配置中：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210707722.png" alt="image-20201027210707722"></p>
+<p>将订单服务80微服务发布到上面2台Eureka集群配置中：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210754093.png" alt="image-20201027210754093"></p>
+<p>进行测试：    </p>
+<ol>
+<li><p>先要启动EurekaServer,7001/7002服务</p>
+</li>
+<li><p>再要启动服务提供者provider,8001</p>
+</li>
+<li><p>再要启动消费者,80</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://localhost/consumer/payment/get/1">http://localhost/consumer/payment/get/1</a></p>
+</li>
+</ol>
+<p>展示效果： 相互注册,相互受望</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211008514.png" alt="image-20201027211008514"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211015203.png" alt="image-20201027211015203"></p>
+<p>3.3   支付服务提供者8001集群环境搭建</p>
+<p>​    参考cloud-provider-payment8001，新建cloud-provider-payment8002。两者类似。功能相同。配置只需修改部份名称。</p>
+<p>为了方便区分，负载均衡，我们在controller这里新添加一个方法，用于显示调用的端口号。修改8001/8002的controller：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211928463.png" alt="image-20201027211928463"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211934335.png" alt="image-20201027211934335"></p>
+<p>这里的服务订单不能写死：之前 cloud-consumerzk-order80  的controller层是单机配置，</p>
+<p>所以指定了地址：public static final String PAYMENT_URL=”<a href="http://localhost:8001&quot;">http://localhost:8001&quot;</a>;</p>
+<p>​                              // 通过在eureka上注册过的微服务名称调用</p>
+<p>现在需要修改成：public static final String INVOKE_URL=”<a target="_blank" rel="noopener" href="http://cloud-provider-payment&quot;;//%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%90%8D%E7%A7%B0">http://cloud-provider-payment&quot;;//直接调用微服务的名称</a></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212322238.png" alt="image-20201027212322238"></p>
+<p>这里我们因为有两个生产者服务，注册中心cloud-provider-payment 名称的服务有两个，所以我们需要开启负载均衡。</p>
+<p>我们在引入的eureka依赖中也包含了ribbon依赖。所以我们需要创建一个bean，注册到spring boot容器中。ribbon支持 restTemplate+负载均衡模式。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212710619.png" alt="image-20201027212710619"></p>
+<p>进行测试：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212827672.png" alt="image-20201027212827672"></p>
+<p>3.4 actuator微服务信息完善</p>
+<p>​     主机名称:服务名称修改：当前问题，我们注册中心的名称：<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212938614.png" alt="image-20201027212938614"></p>
+<p>修改cloud-provoder-payment8001，修改yaml:  添加红色字体内容。<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213019404.png" alt="image-20201027213019404"></p>
+<p>3.5 服务发现Discovery</p>
+<p>​    对于注册eureka里面的微服务,可以通过服务发现来获得该服务的信息。修改cloud-provider-payment8001的Controller:</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213213145.png" alt="image-20201027213213145"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213217991.png" alt="image-20201027213217991"></p>
+<p>我们还需要在8001的启动类上添加一个注解：**@EnableDiscoveryClient**</p>
+<p>进行自测：  先要启动EurekaServer。再启动8001主启动类,需要稍等一会。<a target="_blank" rel="noopener" href="http://localhost:8001/payment/discovery">http://localhost:8001/payment/discovery</a></p>
+<p>​        效果：  将会打印出服务器的相关信息</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213358517.png" alt="image-20201027213358517"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213403947.png" alt="image-20201027213403947"></p>
+<ol start="3">
+<li>6   eureka自我保护</li>
+</ol>
+<p>​    在这里在简单简述一下eureka的自我保护：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213534910.png" alt="image-20201027213534910"></p>
+<p> 也就是： <strong>某时刻 一个微服务不可用了,Eureka不会立刻清理,依旧会对该服务的信息进行保存</strong> ，<strong>属于CAP里面的AP分支</strong></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213702768.png" alt="image-20201027213702768"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213717831.png" alt="image-20201027213717831"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213724076.png" alt="image-20201027213724076"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213756281.png" alt="image-20201027213756281"></p>
+<p>怎么禁止自我保护： </p>
+<p>​      注册中心eurekaServer端7001。出产默认,自我保护机制是开启的。即eureka.server.enable-self-preservation=true。我们可以自主设置：使用eureka.server.enable-self-preservation=false 来禁用自我保护模式。禁用效果：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213919223.png" alt="image-20201027213919223"></p>
+<p> 在eurekaServer端7001处设置关闭自我保护机制。在服务注册中心设置。</p>
+<p>生产者客户端eurekaClient端8001。</p>
+<p>eureka.instance.lease-renewal-interval-in-seconds=30，单位为秒(默认是30秒)。</p>
+<p>eureka.instance.lease-expiration-duration-in-seconds=90，单位为秒(默认是390秒)</p>
+<p> 进行配置：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027214102289.png" alt="image-20201027214102289"></p>
+<p>测试： 7001和8001都配置成功。先启动7001再启动8001,先关闭8001.然后可以看到8001马上就会被删除了。</p>
+<h6 id="CAP-定理"><a href="#CAP-定理" class="headerlink" title="CAP 定理"></a>CAP 定理</h6><p>CAP原则又称CAP定理，指的是在一个分布式系统中，Consistency（数据一致性）、 Availability（服务可用性）、Partition tolerance（分区容错性），三者不可兼得。CAP由Eric Brewer在2000年PODC会议上提出。该猜想在提出两年后被证明成立，成为我们熟知的CAP定理。而在微服务中，分区容错性必不可少，所以，只剩下AP和CP两种方式。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027214851871.png" alt="image-20201027214851871"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027214907399.png" alt="image-20201027214907399"></p>
+<h6 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h6><p>   参考连接：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jing99/p/11576133.html">https://www.cnblogs.com/jing99/p/11576133.html</a>   SpringCloud之Eureka注册中心原理及其搭建</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1yE411x7Ky?p=16">https://www.bilibili.com/video/BV1yE411x7Ky?p=16</a>  2020SpringCloud权威教程_SpringCloud_阳哥-周阳-【完结】-阳哥带你学spring cloud–尚硅谷公开课</p>
+<p>以上Eureka的项目源码都已发布到我的GitHub和gitee中。</p>
+<p>github: <a target="_blank" rel="noopener" href="https://github.com/showanswer/springcloud-study">https://github.com/showanswer/springcloud-study</a></p>
+<p>gitee:   <a target="_blank" rel="noopener" href="https://gitee.com/showanswer/springcloud-study">https://gitee.com/showanswer/springcloud-study</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>可以打赏了哦</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="答案 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="答案 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+              <a href="/tags/Eureka/" rel="tag"># Eureka</a>
+              <a href="/tags/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" rel="tag"># 服务注册中心</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/10/22/2020-10-22-Centos-7-%E5%AE%89%E8%A3%85Mysql-8.0+%E7%89%88%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="prev" title="Centos7 安装Mysql 8.0+版本数据库">
+                  <i class="fa fa-chevron-left"></i> Centos7 安装Mysql 8.0+版本数据库
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">答案</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="本站访问人数 fa fa-user 人次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="//cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","app_key":"KYIdQwqhQdxBNnuSYz8oyyoL","server_url":null,"security":true};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+  
+
+  
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: "/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/",
+    }, {"enable":true,"appId":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","appKey":"KYIdQwqhQdxBNnuSYz8oyyoL","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":false,"serverURLs":null,"enableQQ":false,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":105,"height":180},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

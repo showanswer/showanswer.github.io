@@ -23,20 +23,27 @@
     var CONFIG = {"hostname":"showanswer.github.io","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
 
-  <meta name="description" content="一、基础环境的搭建1.1 安装node.js 通过官网下载相对应的版本： https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F;  以管理员的身份打开cmd  node -v 查看版本  npm -v查看版本  由于国外网站下载速度较慢，所以我们一般会使用国内镜像这里推荐使用淘宝的源使用npm下载cnpm    npm install -g cnpm -registry&#x3D;https:&#x2F;&#x2F;registrynp">
+  <meta name="description" content="nginx的下载与安装nginx 是什么 nginx是一个开源的，支持高性能，高并发的www服务和代理服务软件。它是一个俄罗斯人lgor sysoev开发的，作者将源代码开源出来供全球使用。nginx比它大哥apache性能改进许多，nginx占用的系统资源更少，支持更高的并发连接，有更高的访问效率。nginx不但是一个优秀的web服务软件，还可以作为反向代理，负载均衡，以及缓存服务使用。安装更为">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用hexo框架搭建个人博客">
-<meta property="og:url" content="http://showanswer.github.io/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:title" content="Linux下安装nginx和nacos">
+<meta property="og:url" content="http://showanswer.github.io/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/index.html">
 <meta property="og:site_name" content="showanswer">
-<meta property="og:description" content="一、基础环境的搭建1.1 安装node.js 通过官网下载相对应的版本： https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F;  以管理员的身份打开cmd  node -v 查看版本  npm -v查看版本  由于国外网站下载速度较慢，所以我们一般会使用国内镜像这里推荐使用淘宝的源使用npm下载cnpm    npm install -g cnpm -registry&#x3D;https:&#x2F;&#x2F;registrynp">
+<meta property="og:description" content="nginx的下载与安装nginx 是什么 nginx是一个开源的，支持高性能，高并发的www服务和代理服务软件。它是一个俄罗斯人lgor sysoev开发的，作者将源代码开源出来供全球使用。nginx比它大哥apache性能改进许多，nginx占用的系统资源更少，支持更高的并发连接，有更高的访问效率。nginx不但是一个优秀的web服务软件，还可以作为反向代理，负载均衡，以及缓存服务使用。安装更为">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-09-13T11:57:35.000Z">
-<meta property="article:modified_time" content="2020-09-13T13:09:18.881Z">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/nginx下载.jpg">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/nginx下载2.jpg">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/各种服务注册中心的对比.jpeg">
+<meta property="article:published_time" content="2020-10-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-27T14:18:26.992Z">
 <meta property="article:author" content="答案">
+<meta property="article:tag" content="springcloud">
+<meta property="article:tag" content="nginx">
+<meta property="article:tag" content="nacos">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/如果answer/Pictures/images/nginx下载.jpg">
 
 
-<link rel="canonical" href="http://showanswer.github.io/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+<link rel="canonical" href="http://showanswer.github.io/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/">
 
 
 <script class="page-configurations">
@@ -49,7 +56,7 @@
   };
 </script>
 
-  <title>使用hexo框架搭建个人博客 | showanswer</title>
+  <title>Linux下安装nginx和nacos | showanswer</title>
   
 
 
@@ -205,7 +212,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">一、基础环境的搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%AE%89%E8%A3%85node-js"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%AE%89%E8%A3%85git"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 安装git</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E4%BD%BF%E7%94%A8cnpm-%E5%AE%89%E8%A3%85hexo-cli%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">二、 使用cnpm 安装hexo-cli框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E5%8D%9A%E5%AE%A2%E7%BC%96%E8%BE%91"><span class="nav-number">3.</span> <span class="nav-text">三、 博客编辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81-%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2"><span class="nav-number">4.</span> <span class="nav-text">四、 博客部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%9B%B4%E6%8D%A2%E5%8D%9A%E5%AE%A2%E4%B8%BB%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">五、更换博客主题</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#nginx%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">nginx的下载与安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#nginx-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.</span> <span class="nav-text">nginx 是什么</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-nginx-%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">1. nginx 依赖环境准备</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-nginx-%E7%9A%84%E6%AD%A3%E5%BC%8F%E5%AE%89%E8%A3%85"><span class="nav-number">1.3.</span> <span class="nav-text">2. nginx 的正式安装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nacos%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%92%8C%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">&#x2F;nacos的下载和安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">2.1.</span> <span class="nav-text">启动</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -281,7 +288,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -297,7 +304,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          使用hexo框架搭建个人博客
+          Linux下安装nginx和nacos
         </h1>
 
         <div class="post-meta-container">
@@ -307,13 +314,32 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-09-13 19:57:35 / 修改时间：21:09:18" itemprop="dateCreated datePublished" datetime="2020-09-13T19:57:35+08:00">2020-09-13</time>
+      <time title="创建时间：2020-10-13 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-13T00:00:00+08:00">2020-10-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-10-27 22:18:26" itemprop="dateModified" datetime="2020-10-27T22:18:26+08:00">2020-10-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index"><span itemprop="name">微服务</span></a>
+        </span>
     </span>
 
   
-    <span id="/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="post-meta-item leancloud_visitors" data-flag-title="使用hexo框架搭建个人博客" title="阅读次数">
+    <span id="/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/" class="post-meta-item leancloud_visitors" data-flag-title="Linux下安装nginx和nacos" title="阅读次数">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -335,8 +361,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -350,68 +376,83 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="一、基础环境的搭建"><a href="#一、基础环境的搭建" class="headerlink" title="一、基础环境的搭建"></a>一、基础环境的搭建</h2><h3 id="1-1-安装node-js"><a href="#1-1-安装node-js" class="headerlink" title="1.1 安装node.js"></a>1.1 安装node.js</h3><ol>
-<li><p>通过官网下载相对应的版本： <a target="_blank" rel="noopener" href="https://nodejs.org/en/">https://nodejs.org/en/</a></p>
+        <h4 id="nginx的下载与安装"><a href="#nginx的下载与安装" class="headerlink" title="nginx的下载与安装"></a>nginx的下载与安装</h4><h5 id="nginx-是什么"><a href="#nginx-是什么" class="headerlink" title="nginx 是什么"></a>nginx 是什么</h5><p> <em>nginx是一个开源的，支持高性能，高并发的www服务和代理服务软件。它是一个俄罗斯人lgor sysoev开发的，作者将源代码开源出来供全球使用。</em><br><em>nginx比它大哥apache性能改进许多，nginx占用的系统资源更少，支持更高的并发连接，有更高的访问效率。</em><br><em>nginx不但是一个优秀的web服务软件，还可以作为反向代理，负载均衡，以及缓存服务使用。</em><br><em>安装更为简单，方便，灵活。</em></p>
+<h5 id="1-nginx-依赖环境准备"><a href="#1-nginx-依赖环境准备" class="headerlink" title="1. nginx 依赖环境准备"></a>1. nginx 依赖环境准备</h5><p><em>安装nginx之前，需要安装相应的环境，让nginx可以正常的允许</em>：</p>
+<ol>
+<li><p>gcc环境：基本运行环境</p>
 </li>
-<li><p>以管理员的身份打开cmd</p>
+<li><p>pcre：用于nginx的http模块解析正则表达式</p>
 </li>
-<li><p>node -v 查看版本</p>
+<li><p>zlib：用户进行gzip压缩</p>
 </li>
-<li><p>npm -v查看版本</p>
-</li>
-<li><p>由于国外网站下载速度较慢，所以我们一般会使用国内镜像这里推荐使用淘宝的源<br>使用npm下载cnpm    npm install -g cnpm -registry=<a target="_blank" rel="noopener" href="https://registrynpm.taobao.org/">https://registrynpm.taobao.org</a></p>
+<li><p>openssl：用于nginx https协议的传输 </p>
+<p>可以直接通过yum进行安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
 
+</li>
+</ol>
+<h5 id="2-nginx-的正式安装"><a href="#2-nginx-的正式安装" class="headerlink" title="2. nginx 的正式安装"></a>2. nginx 的正式安装</h5><p>首先进入官网（<a target="_blank" rel="noopener" href="http://nginx.org/en/download.html%EF%BC%89">http://nginx.org/en/download.html）</a> 下载指定版本的安装包，这里下载的是nginx-1.18.0.tar.gz：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;nginx.org&#x2F;download&#x2F;nginx-1.18.0.tar.gz</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
-<h3 id="1-2-安装git"><a href="#1-2-安装git" class="headerlink" title="1.2 安装git"></a>1.2 安装git</h3><ol>
-<li><p>百度git官网，[git] <a target="_blank" rel="noopener" href="https://git-scm.com/download">https://git-scm.com/download</a> 根据自己的电脑下载相对应的版本</p>
-</li>
-<li><p>下载好后，傻瓜式安装即可。安装好后。在cmd中输入git 查看下载版本<br>出现版本号后就说明安装成功了。</p>
-<blockquote>
-<p>启动Git </p>
-</blockquote>
-</li>
-</ol>
-<p>安装成功后在开始菜单中会有Git项，菜单下有3个程序：任意文件夹下右键也可以看到对应的程序！<br><strong>Git Bash:</strong>  Unix与Linux风格的命令行，使用最多，推荐最多<br><strong>Git CMD:</strong>  Windows风格的命令行<br><strong>Git  GUI:</strong>  图形界面的Git，不建议初学者使用，尽量先熟悉常用命令<br>3. 环境配置<br>     一般git 的账户和邮箱应该与GitHub上的账户保持一致。这里如果没有GitGub账户的话应该先去注册一个账户。注册好后，就可以进行配置了。<br>    <code>git config --system --list   #查看系统的config</code><br>    <code>git config --global  --list  #查看当前用户（global）配置</code><br> <strong>Git相关的配置文件：</strong><br>1）、Git\etc\gitconfig  ：Git 安装目录下的 gitconfig     –system 系统级<br>2）、C:\Users\Administrator\ .gitconfig    只适用于当前登录用户的配置  –global 全局</p>
-<p>​     这里可以直接编辑配置文件，通过命令设置后会响应到这里。</p>
-<ol start="4">
-<li><p>设置用户名与邮箱（用户标识，必要）</p>
-<pre><code>#配置用户名
-   git config --global user.name &quot;username&quot;    //（ &quot;username&quot;是自己的账户名，）
+<p>下载好后我们可以把他拖到Centos中的指定目录下,我这里的目录为：/usr/local/. 这里我们还可以通过在线安装的方式下载nginx。通过wget命令在线下载到目录中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://nginx.org/download/nginx-1.18.0.tar.gz</span><br></pre></td></tr></table></figure>
 
-   git config --global user.email &quot;username@email.com&quot;     //(&quot;username@email.com&quot;注册账号时用的邮箱)</code></pre>
-<p>以上命令执行结束后，可用 git config –global –list 命令查看配置是否OK</p>
-<h2 id="二、-使用cnpm-安装hexo-cli框架"><a href="#二、-使用cnpm-安装hexo-cli框架" class="headerlink" title="二、 使用cnpm 安装hexo-cli框架"></a>二、 使用cnpm 安装hexo-cli框架</h2></li>
-<li><p>在任意目录下，鼠标右击，点击 Git Bash 输入cnpm install -g hexo-cli</p>
-</li>
-<li><p>在当前目录下创建一个blog文件夹，并进入这个文件</p>
-</li>
-<li><p>使用hexo init语句生成博客框架。blog文件里就会多出一些基本文件</p>
-</li>
-<li><p>启动博客 hexo server，本地端口4000启动。在浏览器上输入localhost:4000即可进入</p>
-</li>
-</ol>
-<h2 id="三、-博客编辑"><a href="#三、-博客编辑" class="headerlink" title="三、 博客编辑"></a>三、 博客编辑</h2><ol>
-<li>新建博客  输入语句：hexo new“博客标题名”</li>
-<li>进入新建博客文件夹，编辑博客  编辑文本格式为 .md格式</li>
-<li>退回blog目录，hexo clean 清理缓存， hexo g 生成代码</li>
-</ol>
-<h2 id="四、-博客部署"><a href="#四、-博客部署" class="headerlink" title="四、 博客部署"></a>四、 博客部署</h2><ol>
-<li><p>登陆github账户，新建一个仓库。 new repository</p>
-</li>
-<li><p>在blog目录下装一个git部署的插件，输入语句：cnpm install hexo-deployer-git –save</p>
-</li>
-<li><p>设置 _config.yml文件：</p>
-</li>
-</ol>
-<p>deploy:<br>     type: git<br>     repo: <a target="_blank" rel="noopener" href="https://github.com/showanswer/showanswer.github.io.git">https://github.com/showanswer/showanswer.github.io.git</a><br>     branch: master<br>4. 部署到远端，输入语句：hexo d<br>5. 部署后，在网页搜索对应url 即可查看博客</p>
-<h2 id="五、更换博客主题"><a href="#五、更换博客主题" class="headerlink" title="五、更换博客主题"></a>五、更换博客主题</h2><ol>
-<li>克隆想要的hexo主题</li>
-<li>cmd输入语句：<strong>git clone 主题地址 themes/主题名，将主题克隆到themes目录下</strong></li>
-<li>配置主题，修改_config.yml文件，将里面的theme值改为克隆的主题名 </li>
-</ol>
+<p>下载好后，解压并进入文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar zxf nginx-1.18.0.tar.gz</span><br><span class="line">cd nginx-1.18.0</span><br></pre></td></tr></table></figure>
+
+<p>编译安装nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd -M -s &#x2F;sbin&#x2F;nologin nginx      #这里是取消指定用户ID和用户组 ，不写也可以</span><br><span class="line">sudo .&#x2F;configure --prefix&#x3D;&#x2F;usr&#x2F;local&#x2F;nginx --user&#x3D;nginx  # 执行编译，将编译好的文件存放在指定目录下</span><br><span class="line">sudo make &amp;&amp; sudo make install       #开始安装</span><br></pre></td></tr></table></figure>
+
+<p>执行完成之后，到/usr/local/nginx中查看如下：</p>
+<p><img src="C:\Users\如果answer\Pictures\images\nginx下载.jpg" alt="nginx下载"></p>
+<p>进入到sbin目录，里面只有一个nginx文件:</p>
+<p><img src="C:\Users\如果answer\Pictures\images\nginx下载2.jpg" alt="nginx下载2"></p>
+<p>直接在当前目录执行nginx命令启动nginx</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./nginx</span><br></pre></td></tr></table></figure>
+
+<p>通过命令查看是否正常启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep nginx</span><br></pre></td></tr></table></figure>
+
+<p>这里我们可以查看nginx目录下的conf目录，里面有个文件nginx.conf。使用 <strong>vim nginx.conf</strong> 命令可以查看里面的使用端口，默认为80</p>
+<p>我们可以访问：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;IP地址:80</span><br></pre></td></tr></table></figure>
+
+<p>打开页面则正常访问。若出错，则查看防火墙的80端口是否开启。</p>
+<p>我们可以使用命令先1查看防火墙状态，若为active.且2查看防火墙开放的端口若没有80端口.3关闭防火墙：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl status firewalld   #查看防火墙状态</span><br><span class="line">firewall-cmd --list-all     #查看防火墙开房的端口</span><br><span class="line">systemctl stop firewalld   #关闭防火墙   |  systemctl start firewalld   #开启防火墙</span><br></pre></td></tr></table></figure>
+
+<p>我们也可以选择开放80端口 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo firewall-cmd --add-port&#x3D;80&#x2F;tcp --permanent</span><br></pre></td></tr></table></figure>
+
+<p>最后：这里启动的时候可能会出现错误。若前面安装的时候指定了 用户和用户组 。</p>
+<p>会出现错误：  <code>nginx: [emerg] getpwnam(&quot;nginx&quot;) failed</code></p>
+<p>我们则需要设置，可以去除指定设置。 <code>useradd -s /sbin/nologin -M nginx </code></p>
+<p> 这里若再运行又报了一个错：<code> mkdir: 无法创建目录&quot;/var/cache/nginx/client_temp&quot;:</code></p>
+<p>则使用命令<code>mkdir -p  /var/cache/nginx/client_temp</code></p>
+<p>可以使用：<code>id nginx</code> 来查看权限组.</p>
+<p><strong>查询链接</strong>：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/dotnetcrazy/p/11304783.html">https://www.cnblogs.com/dotnetcrazy/p/11304783.html</a></p>
+<p>​                   <a target="_blank" rel="noopener" href="https://www.cnblogs.com/smfx1314/p/10546158.html">https://www.cnblogs.com/smfx1314/p/10546158.html</a></p>
+<h4 id="nacos的下载和安装"><a href="#nacos的下载和安装" class="headerlink" title="/nacos的下载和安装"></a>/nacos的下载和安装</h4><p>Nacos就是注册中心+配置中心的组合.等价于Nacos=Eureka+Config+Bus。</p>
+<p>作用：替代Eureka做服务注册中心。替代Config做服务配置中心</p>
+<p>首先在官网 <a target="_blank" rel="noopener" href="https://github.com/alibaba/Naco">https://github.com/alibaba/Naco</a> 选择适当的版本进行下载。</p>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_discovery%E3%80%82%E6%88%96%E8%80%85https://nacos.io/zh-cn/">https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_discovery。或者https://nacos.io/zh-cn/</a></p>
+<p>各种服务注册中心的对比：</p>
+<p><img src="C:\Users\如果answer\Pictures\images\各种服务注册中心的对比.jpeg" alt="各种服务注册中心的对比"></p>
+<p>下载好后，拖动到centos指定目录下，我这里收/opt/目录下。并在这里解压</p>
+<p><code>tar -zxvf nacos-server-1.3.1.tar.gz </code>  </p>
+<p>解压好后，也可以备份一份到/mynacos中。这样就下载安装完毕了。</p>
+<h5 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h5><p><em>进入到bin目录下，并执行启命令：</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cdc nacos&#x2F;bin</span><br><span class="line">sh startup.sh -m standalone    #启动单机版</span><br></pre></td></tr></table></figure>
+
+<p>nacos的默认端口号为8848，接下来查看防火墙是否开启。若要访问页面（<a target="_blank" rel="noopener" href="http://ip地址:8848/nacos%EF%BC%89%E3%80%82%E9%9C%80%E8%A6%81%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99%EF%BC%8C%E6%88%96%E8%80%85%E8%AE%BE%E7%BD%AE%E9%98%B2%E7%81%AB%E5%A2%99%E5%BC%80%E6%94%BE8848%E7%AB%AF%E5%8F%A3%EF%BC%8C%E5%BC%80%E6%94%BE%E7%AB%AF%E5%8F%A3%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8A%E9%9D%A2%E5%B7%B2%E7%BB%8F%E8%AF%B4%E8%BF%87%EF%BC%8C%E8%BF%99%E9%87%8C%E5%B0%B1%E4%B8%8D%E5%A4%9A%E8%AF%B4%E4%BA%86%E3%80%82">http://IP地址:8848/nacos）。需要关闭防火墙，或者设置防火墙开放8848端口，开放端口的命令上面已经说过，这里就不多说了。</a></p>
+<p>打开页面后。账号密码都默认为：nacos.</p>
+<p>常用命令：</p>
+<p>启动命令(standalone代表着单机模式运行，非集群模式):<br><code>sh startup.sh -m standalone </code></p>
+<p>关闭命令<br><code>sh shutdown.sh </code></p>
+<p>参考链接：<br><a target="_blank" rel="noopener" href="https://nacos.io/zh-cn/docs/quick-start.html">nacos快速开始</a></p>
+<p>nacos下载安装的参考链接：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_21067307/article/details/103895607">https://blog.csdn.net/qq_21067307/article/details/103895607</a></p>
 
     </div>
 
@@ -438,18 +479,23 @@
   </div>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+              <a href="/tags/nacos/" rel="tag"># nacos</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/09/13/hello-world/" rel="prev" title="Hello World">
-                  <i class="fa fa-chevron-left"></i> Hello World
+                <a href="/2020/09/19/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E6%8E%A2%E7%B4%A2/" rel="prev" title="单例模式探索">
+                  <i class="fa fa-chevron-left"></i> 单例模式探索
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/09/13/typora%E7%BB%83%E4%B9%A0/" rel="next" title="typora练习">
-                  typora练习 <i class="fa fa-chevron-right"></i>
+                <a href="/2020/10/13/2020-10-13-springCloud%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" rel="next" title="springCloud 零基础学习">
+                  springCloud 零基础学习 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -660,7 +706,7 @@ NexT.utils.loadComments('#valine-comments', () => {
   NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
     new Valine(Object.assign({
       el  : '#valine-comments',
-      path: "/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/",
+      path: "/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/",
     }, {"enable":true,"appId":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","appKey":"KYIdQwqhQdxBNnuSYz8oyyoL","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":false,"serverURLs":null,"enableQQ":false,"requiredFields":[]}
     ));
   }, window.Valine);

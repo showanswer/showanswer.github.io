@@ -23,20 +23,24 @@
     var CONFIG = {"hostname":"showanswer.github.io","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
 
-  <meta name="description" content="一、基础环境的搭建1.1 安装node.js 通过官网下载相对应的版本： https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F;  以管理员的身份打开cmd  node -v 查看版本  npm -v查看版本  由于国外网站下载速度较慢，所以我们一般会使用国内镜像这里推荐使用淘宝的源使用npm下载cnpm    npm install -g cnpm -registry&#x3D;https:&#x2F;&#x2F;registrynp">
+  <meta name="description" content="leetcode-02  两数相加1.  题目描述">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用hexo框架搭建个人博客">
-<meta property="og:url" content="http://showanswer.github.io/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:title" content="两数相加">
+<meta property="og:url" content="http://showanswer.github.io/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/index.html">
 <meta property="og:site_name" content="showanswer">
-<meta property="og:description" content="一、基础环境的搭建1.1 安装node.js 通过官网下载相对应的版本： https:&#x2F;&#x2F;nodejs.org&#x2F;en&#x2F;  以管理员的身份打开cmd  node -v 查看版本  npm -v查看版本  由于国外网站下载速度较慢，所以我们一般会使用国内镜像这里推荐使用淘宝的源使用npm下载cnpm    npm install -g cnpm -registry&#x3D;https:&#x2F;&#x2F;registrynp">
+<meta property="og:description" content="leetcode-02  两数相加1.  题目描述">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-09-13T11:57:35.000Z">
-<meta property="article:modified_time" content="2020-09-13T13:09:18.881Z">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/Screenshots/02两数相加题目描述.png">
+<meta property="article:published_time" content="2020-10-13T15:10:00.000Z">
+<meta property="article:modified_time" content="2020-10-27T14:11:32.520Z">
 <meta property="article:author" content="答案">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/如果answer/Pictures/Screenshots/02两数相加题目描述.png">
 
 
-<link rel="canonical" href="http://showanswer.github.io/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+<link rel="canonical" href="http://showanswer.github.io/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/">
 
 
 <script class="page-configurations">
@@ -49,7 +53,7 @@
   };
 </script>
 
-  <title>使用hexo框架搭建个人博客 | showanswer</title>
+  <title>两数相加 | showanswer</title>
   
 
 
@@ -205,7 +209,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">一、基础环境的搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%AE%89%E8%A3%85node-js"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%AE%89%E8%A3%85git"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 安装git</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E4%BD%BF%E7%94%A8cnpm-%E5%AE%89%E8%A3%85hexo-cli%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">二、 使用cnpm 安装hexo-cli框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E5%8D%9A%E5%AE%A2%E7%BC%96%E8%BE%91"><span class="nav-number">3.</span> <span class="nav-text">三、 博客编辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81-%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2"><span class="nav-number">4.</span> <span class="nav-text">四、 博客部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%9B%B4%E6%8D%A2%E5%8D%9A%E5%AE%A2%E4%B8%BB%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">五、更换博客主题</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#leetcode-02-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0"><span class="nav-number">1.</span> <span class="nav-text">leetcode-02  两数相加</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">1.  题目描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%81%9A%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">1.2.</span> <span class="nav-text">2. 做题思路</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E8%A7%A3%E9%A2%98%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">3. 解题代码</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -281,7 +285,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -297,7 +301,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          使用hexo框架搭建个人博客
+          两数相加
         </h1>
 
         <div class="post-meta-container">
@@ -307,13 +311,28 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-09-13 19:57:35 / 修改时间：21:09:18" itemprop="dateCreated datePublished" datetime="2020-09-13T19:57:35+08:00">2020-09-13</time>
+      <time title="创建时间：2020-10-13 23:10:00" itemprop="dateCreated datePublished" datetime="2020-10-13T23:10:00+08:00">2020-10-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-10-27 22:11:32" itemprop="dateModified" datetime="2020-10-27T22:11:32+08:00">2020-10-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
     </span>
 
   
-    <span id="/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="post-meta-item leancloud_visitors" data-flag-title="使用hexo框架搭建个人博客" title="阅读次数">
+    <span id="/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/" class="post-meta-item leancloud_visitors" data-flag-title="两数相加" title="阅读次数">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -335,8 +354,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -350,68 +369,22 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="一、基础环境的搭建"><a href="#一、基础环境的搭建" class="headerlink" title="一、基础环境的搭建"></a>一、基础环境的搭建</h2><h3 id="1-1-安装node-js"><a href="#1-1-安装node-js" class="headerlink" title="1.1 安装node.js"></a>1.1 安装node.js</h3><ol>
-<li><p>通过官网下载相对应的版本： <a target="_blank" rel="noopener" href="https://nodejs.org/en/">https://nodejs.org/en/</a></p>
-</li>
-<li><p>以管理员的身份打开cmd</p>
-</li>
-<li><p>node -v 查看版本</p>
-</li>
-<li><p>npm -v查看版本</p>
-</li>
-<li><p>由于国外网站下载速度较慢，所以我们一般会使用国内镜像这里推荐使用淘宝的源<br>使用npm下载cnpm    npm install -g cnpm -registry=<a target="_blank" rel="noopener" href="https://registrynpm.taobao.org/">https://registrynpm.taobao.org</a></p>
-<a id="more"></a>
+        <h4 id="leetcode-02-两数相加"><a href="#leetcode-02-两数相加" class="headerlink" title="leetcode-02  两数相加"></a>leetcode-02  两数相加</h4><h5 id="1-题目描述"><a href="#1-题目描述" class="headerlink" title="1.  题目描述"></a>1.  题目描述</h5><p><img src="C:\Users\如果answer\Pictures\Screenshots\02两数相加题目描述.png" alt="02两数相加题目描述"></p>
+ <a id="more"></a>
 
+<h5 id="2-做题思路"><a href="#2-做题思路" class="headerlink" title="2. 做题思路"></a>2. 做题思路</h5><ol>
+<li><p>两数相加 将这两个链表首先当作相同长度进行遍历相加，如果一个链表较短就在链表的前面补0<br>如果计算时，有进位问题。我们需要有个变量进行保存。</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">比如：362+20=362+020=382</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进行遍历计算的时候所需要考虑到上一位的进位问题，将保存的变量与新的遍历计算结果相加，若同样存在着进位问题，就同意保存操作</p>
+</li>
+<li><p>如果两个链表都遍历完了，进位制为1，则在新的链表的最前方添加一个节点，值为1</p>
+</li>
+<li><p>我们在使用链表遍历的时候，通常需要有预先指针指向预先节点。该节点的下一个节点才是真正有值的头节点。<strong>使用预先指针的目的在于链表初始化时无可用节点值，而且链表构造过程需要指针移动，进而会导致头指针丢失，无法返回结果</strong></p>
+</li>
+</ol>
+<h5 id="3-解题代码"><a href="#3-解题代码" class="headerlink" title="3. 解题代码"></a>3. 解题代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 指针结构 一个节点一个数值 一个指向下个节点的游标next</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * public class ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode next;</span></span><br><span class="line"><span class="comment"> *     ListNode() &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int val) &#123; this.val = val; &#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int val, ListNode next) &#123; this.val = val; this.next = next; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span><span class="params">(ListNode l1, ListNode l2)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建新的链表 只有一个预先节点 链表尾空  用于将最后的结果存放在里面</span></span><br><span class="line">        ListNode l3=<span class="keyword">new</span> ListNode(<span class="number">0</span>);</span><br><span class="line">        <span class="comment">//创建一个预先节点，该结点的下一个节点才是链表真正的头节点</span></span><br><span class="line">        ListNode p=l3;</span><br><span class="line">        <span class="comment">//创建一个变量temp  用于存放进位值 1</span></span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        <span class="comment">//同时遍历两个链表 若两个链表遍历都结束了  但最后变量temp里有值 1</span></span><br><span class="line">        <span class="comment">//则就需要在新链表里新增一个节点 节点值为temp的值 1</span></span><br><span class="line">        <span class="keyword">while</span>(l1!=<span class="keyword">null</span> || l2!=<span class="keyword">null</span> || temp!=<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="comment">//当链表1和链表2的值不为空时   获取链表1 和链表2 的值</span></span><br><span class="line">            <span class="keyword">int</span> l1Val = l1!=<span class="keyword">null</span> ? l1.val : <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">int</span> l2Val = l2!=<span class="keyword">null</span> ? l2.val : <span class="number">0</span>;</span><br><span class="line">            <span class="comment">//三者相加看是否有进位  并保存</span></span><br><span class="line">            <span class="keyword">int</span> sumVal=l1Val+l2Val+temp;</span><br><span class="line">            <span class="comment">//6+6=12 这里temp取除数 1</span></span><br><span class="line">            temp=sumVal/<span class="number">10</span>;</span><br><span class="line">            <span class="comment">//创建一个节点 将6+6=12 里的余数存入里面 2</span></span><br><span class="line">            ListNode sumNode=<span class="keyword">new</span> ListNode(sumVal%<span class="number">10</span>);</span><br><span class="line">            <span class="comment">//设置新链表的预先节点指向的头节点为sumNode</span></span><br><span class="line">            p.next=sumNode;</span><br><span class="line">            p=sumNode;</span><br><span class="line">            <span class="comment">//循环遍历</span></span><br><span class="line">            <span class="keyword">if</span>(l1!=<span class="keyword">null</span>) l1=l1.next;</span><br><span class="line">            <span class="keyword">if</span>(l2!=<span class="keyword">null</span>) l2=l2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//返回值</span></span><br><span class="line">        <span class="keyword">return</span> l3.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
-<h3 id="1-2-安装git"><a href="#1-2-安装git" class="headerlink" title="1.2 安装git"></a>1.2 安装git</h3><ol>
-<li><p>百度git官网，[git] <a target="_blank" rel="noopener" href="https://git-scm.com/download">https://git-scm.com/download</a> 根据自己的电脑下载相对应的版本</p>
-</li>
-<li><p>下载好后，傻瓜式安装即可。安装好后。在cmd中输入git 查看下载版本<br>出现版本号后就说明安装成功了。</p>
-<blockquote>
-<p>启动Git </p>
-</blockquote>
-</li>
-</ol>
-<p>安装成功后在开始菜单中会有Git项，菜单下有3个程序：任意文件夹下右键也可以看到对应的程序！<br><strong>Git Bash:</strong>  Unix与Linux风格的命令行，使用最多，推荐最多<br><strong>Git CMD:</strong>  Windows风格的命令行<br><strong>Git  GUI:</strong>  图形界面的Git，不建议初学者使用，尽量先熟悉常用命令<br>3. 环境配置<br>     一般git 的账户和邮箱应该与GitHub上的账户保持一致。这里如果没有GitGub账户的话应该先去注册一个账户。注册好后，就可以进行配置了。<br>    <code>git config --system --list   #查看系统的config</code><br>    <code>git config --global  --list  #查看当前用户（global）配置</code><br> <strong>Git相关的配置文件：</strong><br>1）、Git\etc\gitconfig  ：Git 安装目录下的 gitconfig     –system 系统级<br>2）、C:\Users\Administrator\ .gitconfig    只适用于当前登录用户的配置  –global 全局</p>
-<p>​     这里可以直接编辑配置文件，通过命令设置后会响应到这里。</p>
-<ol start="4">
-<li><p>设置用户名与邮箱（用户标识，必要）</p>
-<pre><code>#配置用户名
-   git config --global user.name &quot;username&quot;    //（ &quot;username&quot;是自己的账户名，）
-
-   git config --global user.email &quot;username@email.com&quot;     //(&quot;username@email.com&quot;注册账号时用的邮箱)</code></pre>
-<p>以上命令执行结束后，可用 git config –global –list 命令查看配置是否OK</p>
-<h2 id="二、-使用cnpm-安装hexo-cli框架"><a href="#二、-使用cnpm-安装hexo-cli框架" class="headerlink" title="二、 使用cnpm 安装hexo-cli框架"></a>二、 使用cnpm 安装hexo-cli框架</h2></li>
-<li><p>在任意目录下，鼠标右击，点击 Git Bash 输入cnpm install -g hexo-cli</p>
-</li>
-<li><p>在当前目录下创建一个blog文件夹，并进入这个文件</p>
-</li>
-<li><p>使用hexo init语句生成博客框架。blog文件里就会多出一些基本文件</p>
-</li>
-<li><p>启动博客 hexo server，本地端口4000启动。在浏览器上输入localhost:4000即可进入</p>
-</li>
-</ol>
-<h2 id="三、-博客编辑"><a href="#三、-博客编辑" class="headerlink" title="三、 博客编辑"></a>三、 博客编辑</h2><ol>
-<li>新建博客  输入语句：hexo new“博客标题名”</li>
-<li>进入新建博客文件夹，编辑博客  编辑文本格式为 .md格式</li>
-<li>退回blog目录，hexo clean 清理缓存， hexo g 生成代码</li>
-</ol>
-<h2 id="四、-博客部署"><a href="#四、-博客部署" class="headerlink" title="四、 博客部署"></a>四、 博客部署</h2><ol>
-<li><p>登陆github账户，新建一个仓库。 new repository</p>
-</li>
-<li><p>在blog目录下装一个git部署的插件，输入语句：cnpm install hexo-deployer-git –save</p>
-</li>
-<li><p>设置 _config.yml文件：</p>
-</li>
-</ol>
-<p>deploy:<br>     type: git<br>     repo: <a target="_blank" rel="noopener" href="https://github.com/showanswer/showanswer.github.io.git">https://github.com/showanswer/showanswer.github.io.git</a><br>     branch: master<br>4. 部署到远端，输入语句：hexo d<br>5. 部署后，在网页搜索对应url 即可查看博客</p>
-<h2 id="五、更换博客主题"><a href="#五、更换博客主题" class="headerlink" title="五、更换博客主题"></a>五、更换博客主题</h2><ol>
-<li>克隆想要的hexo主题</li>
-<li>cmd输入语句：<strong>git clone 主题地址 themes/主题名，将主题克隆到themes目录下</strong></li>
-<li>配置主题，修改_config.yml文件，将里面的theme值改为克隆的主题名 </li>
-</ol>
 
     </div>
 
@@ -438,18 +411,22 @@
   </div>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/09/13/hello-world/" rel="prev" title="Hello World">
-                  <i class="fa fa-chevron-left"></i> Hello World
+                <a href="/2020/10/13/2020-10-13-springCloud%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" rel="prev" title="springCloud 零基础学习">
+                  <i class="fa fa-chevron-left"></i> springCloud 零基础学习
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/09/13/typora%E7%BB%83%E4%B9%A0/" rel="next" title="typora练习">
-                  typora练习 <i class="fa fa-chevron-right"></i>
+                <a href="/2020/10/22/2020-10-22-Centos-7-%E5%AE%89%E8%A3%85Mysql-8.0+%E7%89%88%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="Centos7 安装Mysql 8.0+版本数据库">
+                  Centos7 安装Mysql 8.0+版本数据库 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -660,7 +637,7 @@ NexT.utils.loadComments('#valine-comments', () => {
   NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
     new Valine(Object.assign({
       el  : '#valine-comments',
-      path: "/2020/09/13/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/",
+      path: "/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/",
     }, {"enable":true,"appId":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","appKey":"KYIdQwqhQdxBNnuSYz8oyyoL","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":false,"serverURLs":null,"enableQQ":false,"requiredFields":[]}
     ));
   }, window.Valine);

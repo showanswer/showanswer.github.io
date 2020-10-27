@@ -1,6 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>springCloud 零基础学习</title>
+    <url>/2020/10/13/2020-10-13-springCloud%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<h2 id="周阳微服务架构与SpringCloud"><a href="#周阳微服务架构与SpringCloud" class="headerlink" title="周阳微服务架构与SpringCloud"></a>周阳微服务架构与SpringCloud</h2><p>SpringCloud=分布式微服务架构的一站式解决方案，是多种微服务架构落地技术的集合体，俗称微服务全家桶</p>
+<p>SpringBoot是一种服务开发技术</p>
+<p>服务注册与发现：EUREKA</p>
+<p>服务负载均衡与调用：NETFLIX OSS RIBBON</p>
+<p>服务负载与调用：NETTFLIX</p>
+<p>服务熔断降级：HYSTRIX</p>
+<p>服务网关：Zuul</p>
+<p>服务分布式配置：SpringCloud Config</p>
+<p>服务开发：SpingBoot</p>
+ <a id="more"></a>
+
+
+<h3 id="1-选择的版本控制"><a href="#1-选择的版本控制" class="headerlink" title="1.选择的版本控制"></a>1.选择的版本控制</h3><p>​      ![版本控制](C:\Users\如果answer\Pictures\Camera Roll\版本控制.png)</p>
+<p>这里推荐SpringCloud使用Hoxton版本。</p>
+<p>更加详细的版本控制 <a href="https://start.spring.io/actuator/info">https://start.spring.io/actuator/info</a> 。复制后使用json工具即可查看。</p>
+<p>![详细版本控制](C:\Users\如果answer\Pictures\Camera Roll\详细版本控制.png)</p>
+<p>SpringBoot的版本推荐：2.3.3稳定版本<br>![springboot版本推荐](C:\Users\如果answer\Pictures\Camera Roll\springboot版本推荐.png)</p>
+<h3 id="2-支付模块"><a href="#2-支付模块" class="headerlink" title="2. 支付模块"></a>2. 支付模块</h3><h6 id="2-1-父工程的pom文件依赖"><a href="#2-1-父工程的pom文件依赖" class="headerlink" title="2.1  父工程的pom文件依赖"></a>2.1  父工程的pom文件依赖</h6> <figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line">&lt;project xmlns=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> xmlns:xsi=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="line">  xsi:schemaLocation=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span><br><span class="line">  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line"></span><br><span class="line">  &lt;groupId&gt;com.atguigu.springcloud&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;cloud2020&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">  &lt;!--代表这个是pom父工程--&gt;</span><br><span class="line">  &lt;packaging&gt;pom&lt;/packaging&gt;</span><br><span class="line"></span><br><span class="line">  &lt;!--统一管理jar包版本--&gt;</span><br><span class="line">  &lt;properties&gt;</span><br><span class="line">    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</span><br><span class="line">    &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;</span><br><span class="line">    &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;</span><br><span class="line">    &lt;junit.version&gt;4.12&lt;/junit.version&gt;</span><br><span class="line">    &lt;lombok.version&gt;1.18.10&lt;/lombok.version&gt;</span><br><span class="line">    &lt;log4j.version&gt;1.2.17&lt;/log4j.version&gt;</span><br><span class="line">    &lt;mysql.version&gt;8.0.17&lt;/mysql.version&gt;</span><br><span class="line">    &lt;druid.version&gt;1.1.18&lt;/druid.version&gt;</span><br><span class="line">    &lt;mybatis.spring.boot.version&gt;2.1.1&lt;/mybatis.spring.boot.version&gt;</span><br><span class="line">  &lt;/properties&gt;</span><br><span class="line"></span><br><span class="line">  &lt;!--子模块继承之后，提供作用：锁定版本+子<span class="keyword">module</span>不用写groupId和version--&gt;</span><br><span class="line">  &lt;dependencyManagement&gt;&lt;!--定义规范，但不导入--&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;maven-project-info-reports-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;3.0.0&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!--spring boot <span class="number">2.2</span>.<span class="number">2</span>--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-dependencies&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.2.2.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;type&gt;pom&lt;/type&gt;</span><br><span class="line">        &lt;scope&gt;import&lt;/scope&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!--spring cloud Hoxton.SR1--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;Hoxton.SR1&lt;/version&gt;</span><br><span class="line">        &lt;type&gt;pom&lt;/type&gt;</span><br><span class="line">        &lt;scope&gt;import&lt;/scope&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!--spring cloud 阿里巴巴--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-cloud-alibaba-dependencies&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.1.0.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;type&gt;pom&lt;/type&gt;</span><br><span class="line">        &lt;scope&gt;import&lt;/scope&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!--mysql--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;mysql.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!-- druid--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;druid&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;druid.version&#125;&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!--mybatis--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;mybatis.spring.boot.version&#125;&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!--junit--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;junit&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;junit&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;junit.version&#125;&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;!--log4j--&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;log4j&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;log4j&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;log4j.version&#125;&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">  &lt;/dependencyManagement&gt;</span><br><span class="line"></span><br><span class="line">  &lt;!--热启动插件--&gt;</span><br><span class="line">  &lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">      &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">          &lt;addResources&gt;true&lt;/addResources&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">  &lt;/build&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+<p>注意事项：DependencyManagement和Dependencies 的区别：<br>maven使用DependencyManagement元素来提供一种管理依赖版本号的方式。</p>
+<p>通常会在一个组织或者项目的最顶级父POM中看到DependencyManagement元素。</p>
+<p>使用这个元素能让所有在子项目中引用一个依赖而不用显示的列出版本号。maven会沿着父子层次向上查找一个拥有DependencyManagement元素的项目，并且使用其中指定的版本号。<br><strong>只是声明依赖，不实现引入，因此子项目需要显示的声明所需要用的依赖，如果不再子项目中声明依赖，是不会从父项目中继承下来的；只有子项目中声明了该依赖，并且没有指定具体的版本号，才会从父项目中继承该项。并且version和scope都读取自父pom.</strong></p>
+<h6 id="2-2-微服务模块的创建（大致所有的模块的创建）"><a href="#2-2-微服务模块的创建（大致所有的模块的创建）" class="headerlink" title="2.2 微服务模块的创建（大致所有的模块的创建）"></a>2.2 微服务模块的创建（大致所有的模块的创建）</h6><p>   1.建module<br>   2.改pom<br>   3.写YML<br>   4.主启动<br>   5.业务类</p>
+<h6 id="2-3-开启热部署"><a href="#2-3-开启热部署" class="headerlink" title="2.3 开启热部署"></a>2.3 开启热部署</h6><p>   1.Adding devtools to your Project  添加热部署依赖</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">       &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line">            &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">````</span><br><span class="line">   <span class="number">2.</span>Adding plugin to your pom.xml 在父工程里载入插件</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">     &lt;plugin&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;configuration&gt;</span><br><span class="line">          &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">          &lt;addResources&gt;true&lt;/addResources&gt;</span><br><span class="line">        &lt;/configuration&gt;</span><br><span class="line">      &lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
+
+<p>   3.Enabling automatic build  在设置里添加热部署</p>
+<p>![热部署设置](C:\Users\如果answer\Pictures\Camera Roll\热部署设置.png)</p>
+<p>   4.Update the value of 更改设置</p>
+<p>![热部署设置4](C:\Users\如果answer\Pictures\Camera Roll\热部署设置4.png)这里使用快捷键 Shift+Ctrl+Alt+/</p>
+<p>进行设置部署</p>
+<p>![热部署设置5](C:\Users\如果answer\Pictures\Camera Roll\热部署设置5.png)</p>
+<p>   5.重启IDEA</p>
+<h3 id="3-消费者订单模块"><a href="#3-消费者订单模块" class="headerlink" title="3. 消费者订单模块"></a>3. 消费者订单模块</h3><h6 id="3-1-父工程的pom文件依赖"><a href="#3-1-父工程的pom文件依赖" class="headerlink" title="3.1  父工程的pom文件依赖"></a>3.1  父工程的pom文件依赖</h6><figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line">&lt;project xmlns=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span><br><span class="line">         xmlns:xsi=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="line">         xsi:schemaLocation=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span><br><span class="line">    &lt;parent&gt;</span><br><span class="line">        &lt;artifactId&gt;cloud2020&lt;/artifactId&gt;</span><br><span class="line">        &lt;groupId&gt;com.atguigu.springcloud&lt;/groupId&gt;</span><br><span class="line">        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">    &lt;/parent&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;artifactId&gt;cloud-consumer-order80&lt;/artifactId&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line">            &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;lombok&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-2-微服务模块的创建（大致所有的模块的创建）"><a href="#3-2-微服务模块的创建（大致所有的模块的创建）" class="headerlink" title="3.2 微服务模块的创建（大致所有的模块的创建）"></a>3.2 微服务模块的创建（大致所有的模块的创建）</h6><p>   1.建module<br>   2.改pom<br>   3.写YML<br>   4.主启动<br>   5.业务类</p>
+<p>注意：RestTemplate提供了多种便捷访问远程Http服务的方法，是一种简单便捷的访问restful 服务模块类，时Spring提供的用于访问Rest服务的客户端模块工具集。是一个模块与     redisTemplate类似。<br>使用：使用RestTemplate访问restful接口非常简单。<strong>（url,requestMap,ResponseBean.class）这三个参数分别代表：REST请求地址、请求参数、HTTP响应转换被转换成的对象类型</strong>。</p>
+<p>注意：**@RequestBody的相关用法**：</p>
+<p>前端传送的json，后端一定要用@RequestBody结束</p>
+<p>@RequestBody主要用来接收前端传递给后端的json字符串中的数据的(请求体中的数据的)；GET方式无请求体，所以使用@RequestBody接收数据时，前端不能使用GET方式提交数据，而是用POST方式进行提交。在后端的同一个接收方法里，@RequestBody与@RequestParam()可以同时使用，@RequestBody最多只能有一个，而@RequestParam()可以有多个。</p>
+<p>大佬的详细解释：<a href="https://blog.csdn.net/justry_deng/article/details/80972817/">@RequestBody</a></p>
+<p>建议看看。</p>
+]]></content>
+      <categories>
+        <category>后端</category>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>springcloud</tag>
+        <tag>微服务架构</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>两数相加</title>
+    <url>/2020/10/13/2020-10-13-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/</url>
+    <content><![CDATA[<h4 id="leetcode-02-两数相加"><a href="#leetcode-02-两数相加" class="headerlink" title="leetcode-02  两数相加"></a>leetcode-02  两数相加</h4><h5 id="1-题目描述"><a href="#1-题目描述" class="headerlink" title="1.  题目描述"></a>1.  题目描述</h5><p><img src="C:\Users\如果answer\Pictures\Screenshots\02两数相加题目描述.png" alt="02两数相加题目描述"></p>
+ <a id="more"></a>
+
+<h5 id="2-做题思路"><a href="#2-做题思路" class="headerlink" title="2. 做题思路"></a>2. 做题思路</h5><ol>
+<li><p>两数相加 将这两个链表首先当作相同长度进行遍历相加，如果一个链表较短就在链表的前面补0<br>如果计算时，有进位问题。我们需要有个变量进行保存。</p>
+  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">比如：362+20=362+020=382</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进行遍历计算的时候所需要考虑到上一位的进位问题，将保存的变量与新的遍历计算结果相加，若同样存在着进位问题，就同意保存操作</p>
+</li>
+<li><p>如果两个链表都遍历完了，进位制为1，则在新的链表的最前方添加一个节点，值为1</p>
+</li>
+<li><p>我们在使用链表遍历的时候，通常需要有预先指针指向预先节点。该节点的下一个节点才是真正有值的头节点。<strong>使用预先指针的目的在于链表初始化时无可用节点值，而且链表构造过程需要指针移动，进而会导致头指针丢失，无法返回结果</strong></p>
+</li>
+</ol>
+<h5 id="3-解题代码"><a href="#3-解题代码" class="headerlink" title="3. 解题代码"></a>3. 解题代码</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 指针结构 一个节点一个数值 一个指向下个节点的游标next</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * public class ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode next;</span></span><br><span class="line"><span class="comment"> *     ListNode() &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int val) &#123; this.val = val; &#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int val, ListNode next) &#123; this.val = val; this.next = next; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span><span class="params">(ListNode l1, ListNode l2)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建新的链表 只有一个预先节点 链表尾空  用于将最后的结果存放在里面</span></span><br><span class="line">        ListNode l3=<span class="keyword">new</span> ListNode(<span class="number">0</span>);</span><br><span class="line">        <span class="comment">//创建一个预先节点，该结点的下一个节点才是链表真正的头节点</span></span><br><span class="line">        ListNode p=l3;</span><br><span class="line">        <span class="comment">//创建一个变量temp  用于存放进位值 1</span></span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        <span class="comment">//同时遍历两个链表 若两个链表遍历都结束了  但最后变量temp里有值 1</span></span><br><span class="line">        <span class="comment">//则就需要在新链表里新增一个节点 节点值为temp的值 1</span></span><br><span class="line">        <span class="keyword">while</span>(l1!=<span class="keyword">null</span> || l2!=<span class="keyword">null</span> || temp!=<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="comment">//当链表1和链表2的值不为空时   获取链表1 和链表2 的值</span></span><br><span class="line">            <span class="keyword">int</span> l1Val = l1!=<span class="keyword">null</span> ? l1.val : <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">int</span> l2Val = l2!=<span class="keyword">null</span> ? l2.val : <span class="number">0</span>;</span><br><span class="line">            <span class="comment">//三者相加看是否有进位  并保存</span></span><br><span class="line">            <span class="keyword">int</span> sumVal=l1Val+l2Val+temp;</span><br><span class="line">            <span class="comment">//6+6=12 这里temp取除数 1</span></span><br><span class="line">            temp=sumVal/<span class="number">10</span>;</span><br><span class="line">            <span class="comment">//创建一个节点 将6+6=12 里的余数存入里面 2</span></span><br><span class="line">            ListNode sumNode=<span class="keyword">new</span> ListNode(sumVal%<span class="number">10</span>);</span><br><span class="line">            <span class="comment">//设置新链表的预先节点指向的头节点为sumNode</span></span><br><span class="line">            p.next=sumNode;</span><br><span class="line">            p=sumNode;</span><br><span class="line">            <span class="comment">//循环遍历</span></span><br><span class="line">            <span class="keyword">if</span>(l1!=<span class="keyword">null</span>) l1=l1.next;</span><br><span class="line">            <span class="keyword">if</span>(l2!=<span class="keyword">null</span>) l2=l2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//返回值</span></span><br><span class="line">        <span class="keyword">return</span> l3.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Centos7 安装Mysql 8.0+版本数据库</title>
+    <url>/2020/10/22/2020-10-22-Centos-7-%E5%AE%89%E8%A3%85Mysql-8.0+%E7%89%88%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[<h5 id="Centos7-安装Mysql-8-0-版本数据库"><a href="#Centos7-安装Mysql-8-0-版本数据库" class="headerlink" title="Centos7 安装Mysql 8.0+版本数据库"></a>Centos7 安装Mysql 8.0+版本数据库</h5><p><a href="https://www.cnblogs.com/greamrod/p/12595235.html">https://www.cnblogs.com/greamrod/p/12595235.html</a></p>
+<p><a href="https://blog.csdn.net/weixin_42266606/article/details/80879571">https://blog.csdn.net/weixin_42266606/article/details/80879571</a></p>
+<p><a href="https://www.cnblogs.com/lzhdonald/p/12511998.html">https://www.cnblogs.com/lzhdonald/p/12511998.html</a></p>
+<p>还需要有iptables防火墙的常用命令配置</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/09/13/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>typora练习</title>
     <url>/2020/09/13/typora%E7%BB%83%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><a id="more"></a>
@@ -32,24 +142,6 @@
         <tag>分享</tag>
         <tag>博客</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2020/09/13/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>使用hexo框架搭建个人博客</title>
@@ -198,6 +290,272 @@
       </categories>
       <tags>
         <tag>-设计模式 -java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>springcloud之服务注册中心 Eureka</title>
+    <url>/2020/10/27/2020-10-27-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Eureka/</url>
+    <content><![CDATA[<p>![springcloud](C:\Users\如果answer\Pictures\Camera Roll\springcloud.png)</p>
+ <a id="more"></a>
+
+<h6 id="Eureka-服务注册中心"><a href="#Eureka-服务注册中心" class="headerlink" title="Eureka 服务注册中心"></a>Eureka 服务注册中心</h6><ol>
+<li><p>Eureka基础</p>
+<p>1.1  什么是服务治理：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027191938780.png" alt="image-20201027191938780"></p>
+</li>
+</ol>
+<p>​    1.2  什么是服务注册<br>​      Eureka采用了CS的设计架构，Eureka Server作为服务注册功能的服务器，它是服务注册中心。而系统中的其他微服务，使用Eureka的客户端连接到Eureka Server并维持心跳连接。这样系统的维护人员就可以通过Eureka Server来监控系统中各个微服务是否正常运行。<br>   在服务注册与发现中，有一个服务注册中心。当服务器启动的时候，会把当前自己的服务器信息，比如： 服务地址通讯地址等以别名的方式注册到该服务注册中心上。另一方面（消费者|服务提供者），以该别名的方式去注册中心上获取到实际的通讯地址，然后实现本地的RPC调用RPC远程调用框架核心思想：在注册中心，因为使用注册中心管理每个服务与服务之间的一个依赖关系。在热河RPC远程调用框架中，都会有一个注册中心（存放服务地址相关信息（接口地址））。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027193327010.png" alt="image-20201027193327010"></p>
+<p>   1.3   Eureka的两大组件：eureka server 和 eureka client<br>    <em>Eureka Server</em> 提供服务注册服务<br>     各个微服务节点通过配置启动后，会在EurekaServer中进行注册，这样会在EurekaServer中进行注册中的注册表会存储所有可用的服务节点信息，服务节点的信息可以在界面中直观看到。<br>     Eureka Server本身也是一个服务，默认情况下会自动注册到Eureka注册中心。如果搭建<strong>单机版的Eureka Server注册中心，则需要配置取消Eureka Server的自动注册逻辑</strong>。毕竟当前服务注册到当前服务代表的注册中心中是一个说不通的逻辑。</p>
+<p>​     <em>Eureka Client</em> 通过服务注册中心进行访问<br>​      这是一个客户端，是一个Java客户端。用于简化Eureka Server的交互，客户端同时<strong>具备一个内置的，使用轮询（round-robin）符在算法的负载均衡器</strong>。在应用启动后，将会向Eureka Server在多个心跳周期内没有接收到每个节点的心跳，则服务注册中心就会移除这个节点(默认90秒)。<br>​      <img src="C:\Users\如果answer\Pictures\images\Eureka-client的相关依赖.jpg" alt="Eureka-client的相关依赖"></p>
+<p>  <em>Application Service</em>：服务提供方，是注册到Eureka Server中的服务。<br>  <em>Application Client</em>：  服务消费方，通过Eureka Server发现服务，并消费。在这里，Application Service和Application Client不是绝对上的定义，因为Provider在提供服务的同时，也可以消费其他Provider提供的服务；Consumer在消费服务的同时，也可以提供对外服务。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027195444167.png" alt="image-20201027195444167"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Register(服务注册)：把自己的IP和端口注册给Eureka。</span><br><span class="line">Renew(服务续约)：发送心跳包，每30秒发送一次。告诉Eureka自己还活着。</span><br><span class="line">Cancel(服务下线)：当provider关闭时会向Eureka发送消息，把自己从服务列表中删除。防止consumer调用到不存在的服务。</span><br><span class="line">Get Registry(获取服务注册列表)：获取其他服务列表。</span><br><span class="line">Replicate(集群中数据同步)：eureka集群中的数据复制与同步。</span><br><span class="line">Make Remote Call(远程调用)：完成服务的远程调用。</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>单机Eureka构建步骤</p>
+<p>2.1  IDEA生成EurekaServer端服务注册中心   类似物业公司：</p>
+<p>​        2.1.1 新建一个微服务：即新建一个model ： cloud-eureka-server7001 </p>
+<p>​           1.  pom.xml文件：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--eureka-server--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!--自定义api通用包--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.atguigu.springcloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud-api-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;project.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!--web服务两件套--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--一般为通用配置--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027201155937.png" alt="image-20201027201155937"></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--新版本当前版本--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka- server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="2">
+<li><p>写yml文件：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">7001</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">eureka7001.com</span>  <span class="comment">#eureka服务端的实例名称</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">false</span> <span class="comment">#表示 不向服务中心注册自己</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">false</span>    <span class="comment">#表示自己就是注册中心 用于维护服务实例  不用去检索服务不用自己注册自己</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="comment">#设置Eureka Server 交互的地址查询服务和注册服务都需要依赖这个地址</span></span><br><span class="line">      <span class="comment"># 集群版：defaultZone是列表的意思：若有3台 就把其他两台写上逗号隔开  若是单机版：就写上自己的地址</span></span><br><span class="line">      <span class="comment">#defaultZone: http://eureka7002.com:7002/eureka/</span></span><br><span class="line">   <span class="attr">defaultZone:</span> <span class="string">http://eureka7001.com:7001/eureka/</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">#server:  #这个是  关闭eureka的自我保护机制   90秒内收不到请求 立马移除服务</span></span><br><span class="line">   <span class="comment"># enable-self-preservation: false</span></span><br><span class="line">   <span class="comment"># eviction-interval-timer-in-ms:90000 90秒内收不到请求</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这里需要在本地的 C:\Windows\System32\drivers\etc目录下：hosts文件中</p>
+<blockquote>
+<p>127.0.0.1 eureka7001.com<br>127.0.0.1 eureka7002.com</p>
+</blockquote>
+</li>
+<li><p>主启动类：<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027201535231.png" alt="image-20201027201535231"></p>
+</li>
+</ol>
+<p>​       测试：<a href="http://localhost:7001/">http://localhost:7001/</a>   。启动后点击页面查看。但因为当前没有服务注入：No application available没有服务被发现  因为没有注册服务进来当前不可能有服务被发现</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027201639975.png" alt="image-20201027201639975"></p>
+<p>2.2 EurekaClient端cloud-provider-payment8001  （<strong>提示：生产端和消费端的 业务类都没有展示出来，这个可以自己链接数据库做实验。</strong>）<br>    <strong>将注册进EurekaServer成为服务提供者provider,类似于尚硅谷学校对外提供授课服务</strong></p>
+<ol>
+<li><p>写pom文件.这里要添加这个 添加eureka依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--eureka-client--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>写yml文件。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8001</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-payment-service</span></span><br><span class="line">   <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">com.alibaba.druid.pool.DruidDataSource</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/db2019?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8&amp;useSSL=false</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">888888</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="attr">mapper-locations:</span> <span class="string">classpath:mapper/*.xml</span></span><br><span class="line">  <span class="attr">type-aliases-package:</span> <span class="string">com.atguigu.springcloud.entities</span></span><br><span class="line"></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="comment">#表示是否将自己注册进EurekaService 默认为true</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#是否从EurekaServer中抓取已经注册的信息  默认为true  单节点无所谓  集群必须设置为true才能配合ribbon使用负载均衡</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:7001/eureka</span></span><br><span class="line">      <span class="comment">#defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  #集群版</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">instance-id:</span> <span class="string">payment8001</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span>   <span class="comment">#访问路径可以显示IP地址</span></span><br><span class="line">    <span class="comment">#Eureka客户端向服务端发送心跳的时间间隔，单位为秒 （默认为30秒）</span></span><br><span class="line">    <span class="comment">#lease-renewal-interval-in-seconds: 30</span></span><br><span class="line">    <span class="comment">#Eureka服务端在收到最后一次心跳后等待时间的上线(默认为90秒)，单位为秒，超时就移除该服务</span></span><br><span class="line">    <span class="comment">#lease-expiration-duration-in-seconds: 90    </span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>主启动类：  <code>@EnableEurekaClient</code>   加上该注解</li>
+</ol>
+</li>
+</ol>
+<p>2.3 EurekaClient端cloud-consumer-order80<br><strong>将注册进EurekaServer成为服务消费者consumer,类似于尚硅谷学校上课消费的各位同学</strong></p>
+<ol>
+<li><p>写pom文件.这里要添加这个 添加eureka依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--eureka-client--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>新老版本对比：别再使用老版本</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027204757749.png" alt="image-20201027204757749"></p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-order-service</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="comment">#表示是否将自己注册进EurekaService 默认为true</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#是否从EurekaServer中抓取已经注册的信息  默认为true  单节点无所谓  集群必须设置为true才能配合ribbon使用负载均衡</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:7001/eureka</span></span><br><span class="line">      <span class="comment">#defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka   #集群版</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">instance-id:</span> <span class="string">order80</span></span><br><span class="line">    <span class="attr">prefer-ip-address:</span> <span class="literal">true</span>   <span class="comment">#访问路径可以显示IP地址    </span></span><br></pre></td></tr></table></figure>
+
+<p>测试：先启动EurekaServer，即启动项目 cloud-eureka-server7001作为服务注册中心。 再启动cloud-provider-payment8001作为生产者，最后启动cloud-consumer-order80作为消费者。  开启顺序需要注意！</p>
+<p>查看<a href="http://localhost:7001/">http://localhost:7001/</a> 。查看是否成功注册进去。  这里Application名称就是之前我们所配置的项目名称。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027205341185.png" alt="image-20201027205341185"></p>
+<p>Eureka有者自我保护机制：并非出错。我们也可以取消这个机制，这里就不多做叙述，可以上网搜索了解。<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027205451228.png" alt="image-20201027205451228"></p>
+<ol start="3">
+<li><p>集群Eureka构建步骤</p>
+<p>3.1  Eureka集群原理说明</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027205630479.png" alt="image-20201027205630479"></p>
+<p>​                 解决办法: 搭建Eureka注册中心集群,实现负载均衡+故障容错</p>
+</li>
+</ol>
+<p>​     3.2    新建服务注册中心 cloud-eureka-server7002 。这里可以参考之前的cloud-eureka-server7001。</p>
+<p>​         7001和7002的pom文件一样。我们只需在yml文件中做修改即可。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210141796.png" alt="image-20201027210141796"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210217399.png" alt="image-20201027210217399"></p>
+<p>  这里需要在本地的 C:\Windows\System32\drivers\etc目录下：hosts文件中</p>
+<blockquote>
+<p>127.0.0.1 eureka7001.com<br>127.0.0.1 eureka7002.com</p>
+</blockquote>
+<p>将支付服务8001微服务发布到上面2台Eureka集群配置中：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210707722.png" alt="image-20201027210707722"></p>
+<p>将订单服务80微服务发布到上面2台Eureka集群配置中：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027210754093.png" alt="image-20201027210754093"></p>
+<p>进行测试：    </p>
+<ol>
+<li><p>先要启动EurekaServer,7001/7002服务</p>
+</li>
+<li><p>再要启动服务提供者provider,8001</p>
+</li>
+<li><p>再要启动消费者,80</p>
+</li>
+<li><p><a href="http://localhost/consumer/payment/get/1">http://localhost/consumer/payment/get/1</a></p>
+</li>
+</ol>
+<p>展示效果： 相互注册,相互受望</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211008514.png" alt="image-20201027211008514"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211015203.png" alt="image-20201027211015203"></p>
+<p>3.3   支付服务提供者8001集群环境搭建</p>
+<p>​    参考cloud-provider-payment8001，新建cloud-provider-payment8002。两者类似。功能相同。配置只需修改部份名称。</p>
+<p>为了方便区分，负载均衡，我们在controller这里新添加一个方法，用于显示调用的端口号。修改8001/8002的controller：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211928463.png" alt="image-20201027211928463"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027211934335.png" alt="image-20201027211934335"></p>
+<p>这里的服务订单不能写死：之前 cloud-consumerzk-order80  的controller层是单机配置，</p>
+<p>所以指定了地址：public static final String PAYMENT_URL=”<a href="http://localhost:8001&quot;">http://localhost:8001&quot;</a>;</p>
+<p>​                              // 通过在eureka上注册过的微服务名称调用</p>
+<p>现在需要修改成：public static final String INVOKE_URL=”<a href="http://cloud-provider-payment&quot;;//%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%90%8D%E7%A7%B0">http://cloud-provider-payment&quot;;//直接调用微服务的名称</a></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212322238.png" alt="image-20201027212322238"></p>
+<p>这里我们因为有两个生产者服务，注册中心cloud-provider-payment 名称的服务有两个，所以我们需要开启负载均衡。</p>
+<p>我们在引入的eureka依赖中也包含了ribbon依赖。所以我们需要创建一个bean，注册到spring boot容器中。ribbon支持 restTemplate+负载均衡模式。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212710619.png" alt="image-20201027212710619"></p>
+<p>进行测试：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212827672.png" alt="image-20201027212827672"></p>
+<p>3.4 actuator微服务信息完善</p>
+<p>​     主机名称:服务名称修改：当前问题，我们注册中心的名称：<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027212938614.png" alt="image-20201027212938614"></p>
+<p>修改cloud-provoder-payment8001，修改yaml:  添加红色字体内容。<img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213019404.png" alt="image-20201027213019404"></p>
+<p>3.5 服务发现Discovery</p>
+<p>​    对于注册eureka里面的微服务,可以通过服务发现来获得该服务的信息。修改cloud-provider-payment8001的Controller:</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213213145.png" alt="image-20201027213213145"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213217991.png" alt="image-20201027213217991"></p>
+<p>我们还需要在8001的启动类上添加一个注解：**@EnableDiscoveryClient**</p>
+<p>进行自测：  先要启动EurekaServer。再启动8001主启动类,需要稍等一会。<a href="http://localhost:8001/payment/discovery">http://localhost:8001/payment/discovery</a></p>
+<p>​        效果：  将会打印出服务器的相关信息</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213358517.png" alt="image-20201027213358517"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213403947.png" alt="image-20201027213403947"></p>
+<ol start="3">
+<li>6   eureka自我保护</li>
+</ol>
+<p>​    在这里在简单简述一下eureka的自我保护：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213534910.png" alt="image-20201027213534910"></p>
+<p> 也就是： <strong>某时刻 一个微服务不可用了,Eureka不会立刻清理,依旧会对该服务的信息进行保存</strong> ，<strong>属于CAP里面的AP分支</strong></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213702768.png" alt="image-20201027213702768"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213717831.png" alt="image-20201027213717831"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213724076.png" alt="image-20201027213724076"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213756281.png" alt="image-20201027213756281"></p>
+<p>怎么禁止自我保护： </p>
+<p>​      注册中心eurekaServer端7001。出产默认,自我保护机制是开启的。即eureka.server.enable-self-preservation=true。我们可以自主设置：使用eureka.server.enable-self-preservation=false 来禁用自我保护模式。禁用效果：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027213919223.png" alt="image-20201027213919223"></p>
+<p> 在eurekaServer端7001处设置关闭自我保护机制。在服务注册中心设置。</p>
+<p>生产者客户端eurekaClient端8001。</p>
+<p>eureka.instance.lease-renewal-interval-in-seconds=30，单位为秒(默认是30秒)。</p>
+<p>eureka.instance.lease-expiration-duration-in-seconds=90，单位为秒(默认是390秒)</p>
+<p> 进行配置：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027214102289.png" alt="image-20201027214102289"></p>
+<p>测试： 7001和8001都配置成功。先启动7001再启动8001,先关闭8001.然后可以看到8001马上就会被删除了。</p>
+<h6 id="CAP-定理"><a href="#CAP-定理" class="headerlink" title="CAP 定理"></a>CAP 定理</h6><p>CAP原则又称CAP定理，指的是在一个分布式系统中，Consistency（数据一致性）、 Availability（服务可用性）、Partition tolerance（分区容错性），三者不可兼得。CAP由Eric Brewer在2000年PODC会议上提出。该猜想在提出两年后被证明成立，成为我们熟知的CAP定理。而在微服务中，分区容错性必不可少，所以，只剩下AP和CP两种方式。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027214851871.png" alt="image-20201027214851871"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201027214907399.png" alt="image-20201027214907399"></p>
+<h6 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h6><p>   参考连接：</p>
+<p><a href="https://www.cnblogs.com/jing99/p/11576133.html">https://www.cnblogs.com/jing99/p/11576133.html</a>   SpringCloud之Eureka注册中心原理及其搭建</p>
+<p><a href="https://www.bilibili.com/video/BV1yE411x7Ky?p=16">https://www.bilibili.com/video/BV1yE411x7Ky?p=16</a>  2020SpringCloud权威教程_SpringCloud_阳哥-周阳-【完结】-阳哥带你学spring cloud–尚硅谷公开课</p>
+<p>以上Eureka的项目源码都已发布到我的GitHub和gitee中。</p>
+<p>github: <a href="https://github.com/showanswer/springcloud-study">https://github.com/showanswer/springcloud-study</a></p>
+<p>gitee:   <a href="https://gitee.com/showanswer/springcloud-study">https://gitee.com/showanswer/springcloud-study</a></p>
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>springcloud</tag>
+        <tag>Eureka</tag>
+        <tag>服务注册中心</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux下安装nginx和nacos</title>
+    <url>/2020/10/13/nginx1.18.0%E5%92%8Cnacos1.3.1%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85/</url>
+    <content><![CDATA[<h4 id="nginx的下载与安装"><a href="#nginx的下载与安装" class="headerlink" title="nginx的下载与安装"></a>nginx的下载与安装</h4><h5 id="nginx-是什么"><a href="#nginx-是什么" class="headerlink" title="nginx 是什么"></a>nginx 是什么</h5><p> <em>nginx是一个开源的，支持高性能，高并发的www服务和代理服务软件。它是一个俄罗斯人lgor sysoev开发的，作者将源代码开源出来供全球使用。</em><br><em>nginx比它大哥apache性能改进许多，nginx占用的系统资源更少，支持更高的并发连接，有更高的访问效率。</em><br><em>nginx不但是一个优秀的web服务软件，还可以作为反向代理，负载均衡，以及缓存服务使用。</em><br><em>安装更为简单，方便，灵活。</em></p>
+<h5 id="1-nginx-依赖环境准备"><a href="#1-nginx-依赖环境准备" class="headerlink" title="1. nginx 依赖环境准备"></a>1. nginx 依赖环境准备</h5><p><em>安装nginx之前，需要安装相应的环境，让nginx可以正常的允许</em>：</p>
+<ol>
+<li><p>gcc环境：基本运行环境</p>
+</li>
+<li><p>pcre：用于nginx的http模块解析正则表达式</p>
+</li>
+<li><p>zlib：用户进行gzip压缩</p>
+</li>
+<li><p>openssl：用于nginx https协议的传输 </p>
+<p>可以直接通过yum进行安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install -y gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+</li>
+</ol>
+<h5 id="2-nginx-的正式安装"><a href="#2-nginx-的正式安装" class="headerlink" title="2. nginx 的正式安装"></a>2. nginx 的正式安装</h5><p>首先进入官网（<a href="http://nginx.org/en/download.html%EF%BC%89">http://nginx.org/en/download.html）</a> 下载指定版本的安装包，这里下载的是nginx-1.18.0.tar.gz：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;nginx.org&#x2F;download&#x2F;nginx-1.18.0.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>下载好后我们可以把他拖到Centos中的指定目录下,我这里的目录为：/usr/local/. 这里我们还可以通过在线安装的方式下载nginx。通过wget命令在线下载到目录中</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget http://nginx.org/download/nginx-1.18.0.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>下载好后，解压并进入文件：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar zxf nginx-1.18.0.tar.gz</span><br><span class="line">cd nginx-1.18.0</span><br></pre></td></tr></table></figure>
+
+<p>编译安装nginx</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo useradd -M -s &#x2F;sbin&#x2F;nologin nginx      #这里是取消指定用户ID和用户组 ，不写也可以</span><br><span class="line">sudo .&#x2F;configure --prefix&#x3D;&#x2F;usr&#x2F;local&#x2F;nginx --user&#x3D;nginx  # 执行编译，将编译好的文件存放在指定目录下</span><br><span class="line">sudo make &amp;&amp; sudo make install       #开始安装</span><br></pre></td></tr></table></figure>
+
+<p>执行完成之后，到/usr/local/nginx中查看如下：</p>
+<p><img src="C:\Users\如果answer\Pictures\images\nginx下载.jpg" alt="nginx下载"></p>
+<p>进入到sbin目录，里面只有一个nginx文件:</p>
+<p><img src="C:\Users\如果answer\Pictures\images\nginx下载2.jpg" alt="nginx下载2"></p>
+<p>直接在当前目录执行nginx命令启动nginx</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./nginx</span><br></pre></td></tr></table></figure>
+
+<p>通过命令查看是否正常启动：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ps -ef | grep nginx</span><br></pre></td></tr></table></figure>
+
+<p>这里我们可以查看nginx目录下的conf目录，里面有个文件nginx.conf。使用 <strong>vim nginx.conf</strong> 命令可以查看里面的使用端口，默认为80</p>
+<p>我们可以访问：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;IP地址:80</span><br></pre></td></tr></table></figure>
+
+<p>打开页面则正常访问。若出错，则查看防火墙的80端口是否开启。</p>
+<p>我们可以使用命令先1查看防火墙状态，若为active.且2查看防火墙开放的端口若没有80端口.3关闭防火墙：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl status firewalld   #查看防火墙状态</span><br><span class="line">firewall-cmd --list-all     #查看防火墙开房的端口</span><br><span class="line">systemctl stop firewalld   #关闭防火墙   |  systemctl start firewalld   #开启防火墙</span><br></pre></td></tr></table></figure>
+
+<p>我们也可以选择开放80端口 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo firewall-cmd --add-port&#x3D;80&#x2F;tcp --permanent</span><br></pre></td></tr></table></figure>
+
+<p>最后：这里启动的时候可能会出现错误。若前面安装的时候指定了 用户和用户组 。</p>
+<p>会出现错误：  <code>nginx: [emerg] getpwnam(&quot;nginx&quot;) failed</code></p>
+<p>我们则需要设置，可以去除指定设置。 <code>useradd -s /sbin/nologin -M nginx </code></p>
+<p> 这里若再运行又报了一个错：<code> mkdir: 无法创建目录&quot;/var/cache/nginx/client_temp&quot;:</code></p>
+<p>则使用命令<code>mkdir -p  /var/cache/nginx/client_temp</code></p>
+<p>可以使用：<code>id nginx</code> 来查看权限组.</p>
+<p><strong>查询链接</strong>：<a href="https://www.cnblogs.com/dotnetcrazy/p/11304783.html">https://www.cnblogs.com/dotnetcrazy/p/11304783.html</a></p>
+<p>​                   <a href="https://www.cnblogs.com/smfx1314/p/10546158.html">https://www.cnblogs.com/smfx1314/p/10546158.html</a></p>
+<h4 id="nacos的下载和安装"><a href="#nacos的下载和安装" class="headerlink" title="/nacos的下载和安装"></a>/nacos的下载和安装</h4><p>Nacos就是注册中心+配置中心的组合.等价于Nacos=Eureka+Config+Bus。</p>
+<p>作用：替代Eureka做服务注册中心。替代Config做服务配置中心</p>
+<p>首先在官网 <a href="https://github.com/alibaba/Naco">https://github.com/alibaba/Naco</a> 选择适当的版本进行下载。</p>
+<p>官方文档：<a href="https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_discovery%E3%80%82%E6%88%96%E8%80%85https://nacos.io/zh-cn/">https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_discovery。或者https://nacos.io/zh-cn/</a></p>
+<p>各种服务注册中心的对比：</p>
+<p><img src="C:\Users\如果answer\Pictures\images\各种服务注册中心的对比.jpeg" alt="各种服务注册中心的对比"></p>
+<p>下载好后，拖动到centos指定目录下，我这里收/opt/目录下。并在这里解压</p>
+<p><code>tar -zxvf nacos-server-1.3.1.tar.gz </code>  </p>
+<p>解压好后，也可以备份一份到/mynacos中。这样就下载安装完毕了。</p>
+<h5 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h5><p><em>进入到bin目录下，并执行启命令：</em></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cdc nacos&#x2F;bin</span><br><span class="line">sh startup.sh -m standalone    #启动单机版</span><br></pre></td></tr></table></figure>
+
+<p>nacos的默认端口号为8848，接下来查看防火墙是否开启。若要访问页面（<a href="http://ip地址:8848/nacos%EF%BC%89%E3%80%82%E9%9C%80%E8%A6%81%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99%EF%BC%8C%E6%88%96%E8%80%85%E8%AE%BE%E7%BD%AE%E9%98%B2%E7%81%AB%E5%A2%99%E5%BC%80%E6%94%BE8848%E7%AB%AF%E5%8F%A3%EF%BC%8C%E5%BC%80%E6%94%BE%E7%AB%AF%E5%8F%A3%E7%9A%84%E5%91%BD%E4%BB%A4%E4%B8%8A%E9%9D%A2%E5%B7%B2%E7%BB%8F%E8%AF%B4%E8%BF%87%EF%BC%8C%E8%BF%99%E9%87%8C%E5%B0%B1%E4%B8%8D%E5%A4%9A%E8%AF%B4%E4%BA%86%E3%80%82">http://IP地址:8848/nacos）。需要关闭防火墙，或者设置防火墙开放8848端口，开放端口的命令上面已经说过，这里就不多说了。</a></p>
+<p>打开页面后。账号密码都默认为：nacos.</p>
+<p>常用命令：</p>
+<p>启动命令(standalone代表着单机模式运行，非集群模式):<br><code>sh startup.sh -m standalone </code></p>
+<p>关闭命令<br><code>sh shutdown.sh </code></p>
+<p>参考链接：<br><a href="https://nacos.io/zh-cn/docs/quick-start.html">nacos快速开始</a></p>
+<p>nacos下载安装的参考链接：<br><a href="https://blog.csdn.net/qq_21067307/article/details/103895607">https://blog.csdn.net/qq_21067307/article/details/103895607</a></p>
+]]></content>
+      <categories>
+        <category>后端</category>
+        <category>微服务</category>
+      </categories>
+      <tags>
+        <tag>springcloud</tag>
+        <tag>nginx</tag>
+        <tag>nacos</tag>
       </tags>
   </entry>
 </search>
