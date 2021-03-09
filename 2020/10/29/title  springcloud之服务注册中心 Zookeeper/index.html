@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"showanswer.github.io","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+
+  <meta name="description" content="Zookeeper服务注册中心​      上期，我们已经学过了Eureka，知道了什么是服务注册中心，也学会了eureka的使用。但是现在有个问题，Eureka停止更新了,你怎么办？ 这个时候我们可以选择使用Zookeeper来代替Eureka来作为微服务的服务注册中心。 下面我们就来学习一下SpringCloud整合Zookeeper替代Eureka。  注册中心 Zookeeper 基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springcloud之服务注册中心 Zookeeper">
+<meta property="og:url" content="http://showanswer.github.io/2020/10/29/title%20%20springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%20Zookeeper/index.html">
+<meta property="og:site_name" content="showanswer">
+<meta property="og:description" content="Zookeeper服务注册中心​      上期，我们已经学过了Eureka，知道了什么是服务注册中心，也学会了eureka的使用。但是现在有个问题，Eureka停止更新了,你怎么办？ 这个时候我们可以选择使用Zookeeper来代替Eureka来作为微服务的服务注册中心。 下面我们就来学习一下SpringCloud整合Zookeeper替代Eureka。  注册中心 Zookeeper 基础">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="file://C:/Users/%E5%A6%82%E6%9E%9Canswer/Pictures/Camera%20Roll/springcloud.png?lastModify=1603945700">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/zookeeper架构图.jpg">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/文件系统架构.jpg">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/zookeeper的znode节点.jpg">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029125900001.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029125936370.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029130009600.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029130223948.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029124813780.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029124852717.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029124956594.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029125028904.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029125103065.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029131619643.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201029131650118.png">
+<meta property="og:image" content="http://showanswer.github.io/2020/10/AppData/Roaming/Typora/typora-user-images/image-20201029223724878.png">
+<meta property="article:published_time" content="2020-10-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-30T02:45:25.517Z">
+<meta property="article:author" content="答案">
+<meta property="article:tag" content="springcloud">
+<meta property="article:tag" content="服务注册中心">
+<meta property="article:tag" content="Zookeeper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="file://C:/Users/%E5%A6%82%E6%9E%9Canswer/Pictures/Camera%20Roll/springcloud.png?lastModify=1603945700">
+
+
+<link rel="canonical" href="http://showanswer.github.io/2020/10/29/title%20%20springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%20Zookeeper/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>springcloud之服务注册中心 Zookeeper | showanswer</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/showanswer" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">showanswer</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#Zookeeper%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">1.</span> <span class="nav-text">Zookeeper服务注册中心</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#stat-path-watch-%E8%AE%BE%E7%BD%AEwatch%E4%BA%8B%E4%BB%B6-%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">stat path [watch] 设置watch事件  ：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#get-path-watch-%E8%AE%BE%E7%BD%AEwatch%E4%BA%8B%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">get path [watch] 设置watch事件</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#SpringCloud%E6%95%B4%E5%90%88Zookeeper%E6%9B%BF%E4%BB%A3Eureka"><span class="nav-number">1.</span> <span class="nav-text">SpringCloud整合Zookeeper替代Eureka</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="答案"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">答案</p>
+  <div class="site-description" itemprop="description">stay simple,stay naive</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/showanswer" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;showanswer" rel="noopener" target="_blank"><i class="GitHub fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/showanswer" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;showanswer" rel="noopener" target="_blank"><i class="Gitee fa-fw"></i>Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/343755857" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;343755857" rel="noopener" target="_blank"><i class="bilibili fa-fw"></i>bilibili</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/10/29/title%20%20springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%20Zookeeper/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="答案">
+      <meta itemprop="description" content="stay simple,stay naive">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="showanswer">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          springcloud之服务注册中心 Zookeeper
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-10-29 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-29T00:00:00+08:00">2020-10-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-10-30 10:45:25" itemprop="dateModified" datetime="2020-10-30T10:45:25+08:00">2020-10-30</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2020/10/29/title%20%20springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%20Zookeeper/" class="post-meta-item leancloud_visitors" data-flag-title="springcloud之服务注册中心 Zookeeper" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/10/29/title%20%20springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%20Zookeeper/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/29/title%20%20springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%20Zookeeper/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="file://C:/Users/%E5%A6%82%E6%9E%9Canswer/Pictures/Camera%20Roll/springcloud.png?lastModify=1603945700" alt="springcloud"></p>
+<h6 id="Zookeeper服务注册中心"><a href="#Zookeeper服务注册中心" class="headerlink" title="Zookeeper服务注册中心"></a>Zookeeper服务注册中心</h6><p>​      上期，我们已经学过了Eureka，知道了什么是服务注册中心，也学会了eureka的使用。但是现在有个问题，Eureka停止更新了,你怎么办？ 这个时候我们可以选择使用Zookeeper来代替Eureka来作为微服务的服务注册中心。 下面我们就来学习一下SpringCloud整合Zookeeper替代Eureka。</p>
+<ol>
+<li><p>注册中心 Zookeeper 基础</p>
+<p>首先 Zookeeper是什么？</p>
+<p>官方文档上这么解释zookeeper，它是一个分布式服务框架，是Apache Hadoop 的一个子项目，它主要是用来解决分布式应用中经常遇到的一些数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。</p>
+<p>ZooKeeper 是一个典型的分布式数据一致性解决方案，分布式应用程序可以基于 ZooKeeper 实现诸如数据发布/订阅、负载均衡、命名服务、分布式协调/通知、集群管理、Master 选举、分布式锁和分布式队列等功能。</p>
+<p>ZooKeeper 一个最常用的使用场景就是用于担任服务生产者和服务消费者的注册中心。</p>
+<p><img src="C:\Users\如果answer\Pictures\images\zookeeper架构图.jpg" alt="zookeeper架构图"></p>
+<p>总结一句话：<strong>zookeeper=文件系统+监听通知机制。</strong></p>
+</li>
+</ol>
+<p>​        1、 文件系统 </p>
+<p>​        Zookeeper维护一个类似文件系统的数据结构：</p>
+<p>​        <img src="C:\Users\如果answer\Pictures\images\文件系统架构.jpg" alt="文件系统架构"></p>
+<p>每个子目录项如 NameService 都被称作为 znode(目录节点)，和文件系统一样，我们能够自由的增加、删除znode，在一个znode下增加、删除子znode，唯一的不同在于znode是可以存储数据的。</p>
+<p><em>这里有四种类型的znode：</em></p>
+<ul>
+<li><p><strong>PERSISTENT-持久化目录节点</strong></p>
+<p>客户端与zookeeper断开连接后，该节点依旧存在</p>
+</li>
+<li><p><strong>PERSISTENT_SEQUENTIAL-持久化顺序编号目录节点</strong></p>
+<p>客户端与zookeeper断开连接后，该节点依旧存在，只是Zookeeper给该节点名称进行顺序编号</p>
+</li>
+<li><p><strong>EPHEMERAL-临时目录节点</strong></p>
+<p>客户端与zookeeper断开连接后，该节点被删除</p>
+</li>
+<li><p><strong>EPHEMERAL_SEQUENTIAL-临时顺序编号目录节点</strong></p>
+<p>客户端与zookeeper断开连接后，该节点被删除，只是Zookeeper给该节点名称进行顺序编号</p>
+<p><img src="C:\Users\如果answer\Pictures\images\zookeeper的znode节点.jpg" alt="zookeeper的znode节点"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029125900001.png" alt="image-20201029125900001"></p>
+</li>
+</ul>
+<ol>
+<li><p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029125936370.png" alt="image-20201029125936370"></p>
+</li>
+<li><p>​    <img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029130009600.png" alt="image-20201029130009600"> </p>
+</li>
+<li><p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029130223948.png" alt="image-20201029130223948"></p>
+</li>
+<li><p>数据存储地址</p>
+</li>
+<li><p>默认端口</p>
+</li>
+</ol>
+<p>​     <strong>启动zk服务</strong></p>
+<ul>
+<li><p><code>./zkServer.sh start</code></p>
+<p><strong>查看zk的运行状态</strong></p>
+</li>
+</ul>
+<ul>
+<li><p><code>./zkServer.sh status </code></p>
+<p> <strong>客户端链接zk</strong></p>
+</li>
+<li><p><code>./zkCli.sh </code></p>
+</li>
+</ul>
+<p><em>znode节点的相关操作：常用命令</em></p>
+<ol>
+<li>查看znode的路径，和孩子节点：（默认只有<code>zookeeper</code>一个节点）</li>
+</ol>
+<p>​       查看根目录：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029124813780.png" alt="image-20201029124813780"></p>
+<p>​      查看其它节点中的内容</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029124852717.png" alt="image-20201029124852717"></p>
+<ol start="2">
+<li>创建节点  </li>
+</ol>
+<p>创建testnode节点，关联字符串”zz”  。（create -e 创建临时节点，create -s 创建顺序节点 自动累加）</p>
+<pre><code>  ![image-20201029124919529](C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029124919529.png)</code></pre>
+<p>获取znode数据，查看节点内容</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029124956594.png" alt="image-20201029124956594"></p>
+<p>设置节点内容  （set path data [version] 修改节点）</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029125028904.png" alt="image-20201029125028904"></p>
+<p>删除节点   （delete path [version] 删除节点）</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029125103065.png" alt="image-20201029125103065"></p>
+<h5 id="stat-path-watch-设置watch事件-："><a href="#stat-path-watch-设置watch事件-：" class="headerlink" title="stat path [watch] 设置watch事件  ："></a>stat path [watch] 设置watch事件  ：</h5><p>关于<code>watcher</code>机制大体的理解可以为，当每个节点发生变化，都会触发<code>watcher</code>事件，类似于<code>mysql</code>的触发器。<code>zk</code>中 <code>watcher</code>是一次性的，触发后立即销毁。可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/hohoo1990/article/details/78617336">https://blog.csdn.net/hohoo1990/article/details/78617336</a><br>- <code>stat path [watch]</code> 设置watch事件<br>- <code>get path [watch]</code>设置watch事件<br>- 子节点创建和删除时触发watch事件，子节点修改不会触发该事件</p>
+<h5 id="get-path-watch-设置watch事件"><a href="#get-path-watch-设置watch事件" class="headerlink" title="get path [watch] 设置watch事件"></a>get path [watch] 设置watch事件</h5><p><strong>help 查看客户端帮助命令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 0] <span class="built_in">help</span></span><br><span class="line">ZooKeeper -server host:port cmd args</span><br><span class="line">    <span class="built_in">stat</span> path [watch]</span><br><span class="line">    <span class="built_in">set</span> path data [version]</span><br><span class="line">    ls path [watch]</span><br><span class="line">    delquota [-n|-b] path</span><br><span class="line">    ls2 path [watch]</span><br><span class="line">    setAcl path acl</span><br><span class="line">    setquota -n|-b val path</span><br><span class="line">    <span class="built_in">history</span> </span><br><span class="line">    redo cmdno</span><br><span class="line">    printwatches on|off</span><br><span class="line">    delete path [version]</span><br><span class="line">    sync path</span><br><span class="line">    listquota path</span><br><span class="line">    rmr path</span><br><span class="line">    get path [watch]</span><br><span class="line">    create [-s] [-e] path data acl</span><br><span class="line">    addauth scheme auth</span><br><span class="line">    quit </span><br><span class="line">    getAcl path</span><br><span class="line">    close </span><br><span class="line">    connect host:port</span><br><span class="line">[zk: localhost:2181(CONNECTED) 1] </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>基础命令和Java客户端操作：<br>2.1. zkCli的常用命令。2. 四字命令。 3. Java客户端的操作</li>
+</ol>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029131619643.png" alt="image-20201029131619643"></p>
+<p>​       2. 2.   若版本不持支四字命令了，需要自己再配置文件中添加:   </p>
+<p><code>4lw.commands.whitelist=*</code></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201029131650118.png" alt="image-20201029131650118"></p>
+<p>   2.3.  Java客户端的操作<br>      新建一个项目：zookeeper</p>
+<pre><code>  1. pom依赖：
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">       &lt;dependencies&gt;</span><br><span class="line">        &lt;!--springBoot整合zookeeper客户端--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-zookeeper-discovery&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.2.2.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;log4j&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;log4j&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.2.17&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;junit&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;junit&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.12&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.projectlombok&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;lombok&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.18.12&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;scope&gt;compile&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">       &lt;&#x2F;dependencies&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   2.4. 基础命令配置  **HelloZK**</span><br><span class="line">    </span><br><span class="line">~~~java</span><br></pre></td></tr></table></figure></code></pre>
+<p>//开启日志信息<br>private static final Logger logger= LoggerFactory.getLogger(HelloZK.class);<br>//访问地址：IP+都安口号<br>private final static String CONNECTSTRING=”192.168.80.133:2181”;<br>//路径对象<br>private final static String PATH=”/atguigu”;<br>//会话超时时间<br>private final static int SESSION_TIMEOUT=50*1000;</p>
+<p><del>~</del></p>
+<p>步骤1：  开启ZooKeeper  获取实例对象</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">startZK</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> ZooKeeper(CONNECTSTRING, SESSION_TIMEOUT, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent watchedEvent)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>步骤2：  创建一个Znode节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createZnode</span><span class="params">(ZooKeeper zk,String nodePath,String nodeValue)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">       zk.create(nodePath, nodeValue.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p> 步骤3： 获取一个Znode节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getZnode</span><span class="params">(ZooKeeper zk,String nodePath)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">       String result=<span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">byte</span>[] data = zk.getData(nodePath, <span class="keyword">false</span>, <span class="keyword">new</span> Stat());</span><br><span class="line">       result=<span class="keyword">new</span> String(data);</span><br><span class="line">       <span class="keyword">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p> 步骤4： 关闭ZooKeeper 关闭实例对象流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopZK</span><span class="params">(ZooKeeper zk)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(zk != <span class="keyword">null</span>)&#123;</span><br><span class="line">           zk.close();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤5：主函数调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException, KeeperException </span>&#123;</span><br><span class="line">       HelloZK hello = <span class="keyword">new</span> HelloZK();</span><br><span class="line"></span><br><span class="line">       ZooKeeper zk = hello.startZK();</span><br><span class="line"></span><br><span class="line">       Thread.sleep(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">       <span class="comment">//判断当前节点下有没有这个名称的路径</span></span><br><span class="line">       <span class="keyword">if</span>(zk.exists(PATH, <span class="keyword">false</span>) == <span class="keyword">null</span>)&#123;</span><br><span class="line">           System.out.println(<span class="string">&quot;**********&quot;</span>);</span><br><span class="line">           <span class="comment">//没有就创建</span></span><br><span class="line">           hello.createZnode(zk,PATH,<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">           String resultValue = hello.getZnode(zk, PATH);</span><br><span class="line">           System.out.println(<span class="string">&quot;*****resultValue:&quot;</span>+resultValue);</span><br><span class="line">           logger.info(<span class="string">&quot;*****resultValue:&quot;</span>+resultValue);</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="comment">//有就获取这个值</span></span><br><span class="line">           System.out.println(<span class="string">&quot;*****i have this node&quot;</span>);</span><br><span class="line">           logger.info(<span class="string">&quot;*****i have this node&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       hello.stopZK(zk);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.5. 基础命令配置  <strong>WatchChild</strong></p>
+<p> 监听孩子节点的变化。比如：增加节点了，删除节点了，孩子节点值的变化，无法监听到。（或许可以，我现在不了解）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger= LoggerFactory.getLogger(HelloZK.class);</span><br><span class="line">   <span class="comment">//常量</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String CONNECTSTRING=<span class="string">&quot;192.168.80.133:2181&quot;</span>;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String PATH=<span class="string">&quot;/atguigu&quot;</span>;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> SESSION_TIMEOUT=<span class="number">50</span>*<span class="number">1000</span>;</span><br><span class="line">   <span class="comment">//实例变量</span></span><br><span class="line">   <span class="keyword">private</span> ZooKeeper zk=<span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> String oldValue=<span class="keyword">null</span>;</span><br><span class="line">   <span class="comment">//set---get</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">getZk</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> zk;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setZk</span><span class="params">(ZooKeeper zk)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.zk = zk;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getOldValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> oldValue;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOldValue</span><span class="params">(String oldValue)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.oldValue = oldValue;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>步骤1：  开启ZooKeeper  获取实例对象，并且指定监听的孩子节点的路径</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*开启ZooKeeper  获取实例对象*/</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">startZK</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> ZooKeeper(CONNECTSTRING, SESSION_TIMEOUT, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">           <span class="comment">//一上来 获取实例的时候开始监控   删除 增加 子节点</span></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent event)</span> </span>&#123;</span><br><span class="line">               <span class="comment">//判断 该节点下是否有个类型相同的节点，且这个节点值相同，即两个路径相同，即指定监听节点</span></span><br><span class="line">               <span class="keyword">if</span>(event.getType() == Event.EventType.NodeChildrenChanged  &amp;&amp; event.getPath().equals(PATH))&#123;</span><br><span class="line">                   showChildNode(PATH);</span><br><span class="line">               &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                   showChildNode(PATH);      <span class="comment">//注册父节点并打印初始节点有几个</span></span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;</span><br><span class="line"> <span class="comment">/*调用下列方法*/</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showChildNode</span><span class="params">(String nodePath)</span></span>&#123;</span><br><span class="line">       List&lt;String&gt; list=<span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="comment">//获取孩子节点的相关信息</span></span><br><span class="line">           list = zk.getChildren(nodePath, <span class="keyword">true</span>);</span><br><span class="line">           logger.info(<span class="string">&quot;*****&quot;</span>+list);</span><br><span class="line">           System.out.println(list);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (KeeperException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤2：主函数调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    *   1.监控我们的  /atguigu节点。完成注册</span></span><br><span class="line"><span class="comment">    *   2.按照注册的父节点，监控下面的子节点（增删）情况</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> KeeperException</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException, KeeperException </span>&#123;</span><br><span class="line">       WatchChild watchChild  = <span class="keyword">new</span> WatchChild();</span><br><span class="line">       watchChild.setZk(watchChild.startZK());</span><br><span class="line">       Thread.sleep(Long.MAX_VALUE);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>2.6. 基础命令配置  <strong>WatchOne</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger= LoggerFactory.getLogger(HelloZK.class);</span><br><span class="line">    <span class="comment">//常量</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String CONNECTSTRING=<span class="string">&quot;192.168.80.133:2181&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String PATH=<span class="string">&quot;/atguigu&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> SESSION_TIMEOUT=<span class="number">50</span>*<span class="number">1000</span>;</span><br><span class="line">    <span class="comment">//实例变量</span></span><br><span class="line">    <span class="keyword">private</span> ZooKeeper zk=<span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//set---get</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">getZk</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> zk;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setZk</span><span class="params">(ZooKeeper zk)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.zk = zk;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤1：开启Zookeeper，并获取实例对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*开启ZooKeeper  获取实例对象*/</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">startZK</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ZooKeeper(CONNECTSTRING, SESSION_TIMEOUT, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent watchedEvent)</span> </span>&#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤2：创建一个节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*创建一个Znode节点*/</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createZnode</span><span class="params">(String nodePath,String nodeValue)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">        zk.create(nodePath, nodeValue.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤3： 获取一个节点,并且监听这个节点，若这个节点值由变化，就通知客户端。但只能有效一次。通知一次后，若该节点的值再发生变化，就不再进行通知</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*获取一个Znode节点*/</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getZnode</span><span class="params">(<span class="keyword">final</span> String nodePath)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">       String result=<span class="keyword">null</span>;</span><br><span class="line">       <span class="comment">//设置哨兵  获取节点值的同时  监控这个节点  若有改变 就通知客户端</span></span><br><span class="line">       <span class="keyword">byte</span>[] data = zk.getData(PATH, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">           <span class="comment">//调用trigerValue(PATH)   获取节点的值</span></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent watchedEvent)</span> </span>&#123;</span><br><span class="line">               <span class="keyword">try</span> &#123;</span><br><span class="line">                   trigerValue(nodePath);</span><br><span class="line">               &#125; <span class="keyword">catch</span> (KeeperException e) &#123;</span><br><span class="line">                   e.printStackTrace();</span><br><span class="line">               &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                   e.printStackTrace();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;, <span class="keyword">new</span> Stat());</span><br><span class="line">       result=<span class="keyword">new</span> String(data);</span><br><span class="line">       <span class="keyword">return</span> result;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//获取指定节点的值</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">trigerValue</span><span class="params">(String nodePath)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">       String result=<span class="keyword">null</span>;</span><br><span class="line">       <span class="comment">//设置哨兵</span></span><br><span class="line">       <span class="keyword">byte</span>[] data = zk.getData(nodePath, <span class="keyword">false</span>, <span class="keyword">new</span> Stat());</span><br><span class="line">       result=<span class="keyword">new</span> String(data);</span><br><span class="line">       logger.info(<span class="string">&quot;*******watch one time: &quot;</span>+ result);</span><br><span class="line">       <span class="keyword">return</span> result;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤4：主函数调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    *   监控结点 /test结点 获得初始值后设置watcher，只要发生变化，就打印出最新的值  一次性watch</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> KeeperException</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException, KeeperException </span>&#123;</span><br><span class="line">       WatchOne watchOne = <span class="keyword">new</span> WatchOne();</span><br><span class="line">       watchOne.setZk(watchOne.startZK());</span><br><span class="line">       <span class="comment">//判断节点 是否存在</span></span><br><span class="line">       <span class="keyword">if</span>(watchOne.getZk().exists(PATH,<span class="keyword">false</span>)==<span class="keyword">null</span>)&#123;</span><br><span class="line">             watchOne.createZnode(PATH,<span class="string">&quot;AAA&quot;</span>);</span><br><span class="line">             String restValue = watchOne.getZnode(PATH);</span><br><span class="line">             System.out.println(<span class="string">&quot;******restValue:&quot;</span>+restValue);</span><br><span class="line">           Thread.sleep(Long.MAX_VALUE);</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           String restValue = watchOne.getZnode(PATH);</span><br><span class="line">           System.out.println(<span class="string">&quot;******node ok&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;******restValue:&quot;</span>+restValue);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.6. 基础命令配置  <strong>WatchMore</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger= LoggerFactory.getLogger(HelloZK.class);</span><br><span class="line">   <span class="comment">//常量</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String CONNECTSTRING=<span class="string">&quot;192.168.80.133:2181&quot;</span>;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String PATH=<span class="string">&quot;/atguigu&quot;</span>;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> SESSION_TIMEOUT=<span class="number">50</span>*<span class="number">1000</span>;</span><br><span class="line">   <span class="comment">//实例变量</span></span><br><span class="line">   <span class="keyword">private</span> ZooKeeper zk=<span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> String oldValue=<span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//set---get</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">getZk</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> zk;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setZk</span><span class="params">(ZooKeeper zk)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.zk = zk;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getOldValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> oldValue;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOldValue</span><span class="params">(String oldValue)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.oldValue = oldValue;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤一：开启Zookeeper，并获取实例对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*开启ZooKeeper  获取实例对象*/</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">startZK</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> ZooKeeper(CONNECTSTRING, SESSION_TIMEOUT, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent watchedEvent)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤2：获取一个Znode节点 ，并且进行监听，当该值发生变化后响应给客户端，并且继续监听</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*获取一个Znode节点*/</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getZnode</span><span class="params">(<span class="keyword">final</span> String nodePath)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">       String result=<span class="keyword">null</span>;</span><br><span class="line">       <span class="comment">//设置哨兵  获取节点值的同时  监控这个节点  若有改变 就通知客户端</span></span><br><span class="line">       <span class="keyword">byte</span>[] data = zk.getData(PATH, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">            <span class="comment">//调用trigerValue(PATH)   获取节点的值</span></span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent watchedEvent)</span> </span>&#123;</span><br><span class="line">               <span class="keyword">try</span> &#123;</span><br><span class="line">                   trigerValue(nodePath);</span><br><span class="line">               &#125; <span class="keyword">catch</span> (KeeperException e) &#123;</span><br><span class="line">                   e.printStackTrace();</span><br><span class="line">               &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                   e.printStackTrace();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;, <span class="keyword">new</span> Stat());</span><br><span class="line">       result=<span class="keyword">new</span> String(data);</span><br><span class="line">       oldValue=result;</span><br><span class="line">       <span class="keyword">return</span> result;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="comment">//获取指定节点的值</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">trigerValue</span><span class="params">(<span class="keyword">final</span> String nodePath)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">       String result=<span class="keyword">null</span>;</span><br><span class="line">       <span class="comment">//设置哨兵</span></span><br><span class="line">       <span class="keyword">byte</span>[] data = zk.getData(nodePath, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent watchedEvent)</span> </span>&#123;</span><br><span class="line">               <span class="comment">//调用trigerValue(PATH)   获取节点的值</span></span><br><span class="line">                   <span class="keyword">try</span> &#123;</span><br><span class="line">                       trigerValue(nodePath);</span><br><span class="line">                   &#125; <span class="keyword">catch</span> (KeeperException e) &#123;</span><br><span class="line">                       e.printStackTrace();</span><br><span class="line">                   &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                       e.printStackTrace();</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">       &#125;, <span class="keyword">new</span> Stat());</span><br><span class="line">       result=<span class="keyword">new</span> String(data);</span><br><span class="line">       String newValue=result;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span>(oldValue.equals(newValue))&#123;</span><br><span class="line">           logger.info(<span class="string">&quot;****no changes***&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;****no changes***&quot;</span>);</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           logger.info(<span class="string">&quot;****oldValue:&quot;</span>+oldValue+<span class="string">&quot;\t  newValue:&quot;</span>+newValue);</span><br><span class="line">           System.out.println(<span class="string">&quot;****oldValue:&quot;</span>+oldValue+<span class="string">&quot;\t  newValue:&quot;</span>+newValue);</span><br><span class="line">           oldValue=newValue;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤3：调用主启动类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    *   监控结点 /test结点 获得初始值后设置watcher，只要发生变化，就打印出最新的值  每变一次 就监听一次 循环持续</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> KeeperException</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException, KeeperException </span>&#123;</span><br><span class="line"></span><br><span class="line">       WatchMore watchMore  = <span class="keyword">new</span> WatchMore();</span><br><span class="line">       watchMore.setZk(watchMore.startZK());</span><br><span class="line">       <span class="comment">//判断节点</span></span><br><span class="line">       <span class="keyword">if</span>(watchMore.getZk().exists(PATH,<span class="keyword">false</span>)==<span class="keyword">null</span>)&#123;</span><br><span class="line">           watchMore.createZnode(PATH,<span class="string">&quot;AAA&quot;</span>);</span><br><span class="line">             String restValue = watchMore.getZnode(PATH);</span><br><span class="line"></span><br><span class="line">             System.out.println(<span class="string">&quot;******restValue:&quot;</span>+restValue);</span><br><span class="line"></span><br><span class="line">           Thread.sleep(Long.MAX_VALUE);</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           String restValue = watchMore.getZnode(PATH);</span><br><span class="line">           System.out.println(<span class="string">&quot;******node ok&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;******restValue:&quot;</span>+restValue);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="SpringCloud整合Zookeeper替代Eureka"><a href="#SpringCloud整合Zookeeper替代Eureka" class="headerlink" title="SpringCloud整合Zookeeper替代Eureka"></a>SpringCloud整合Zookeeper替代Eureka</h6><p>注册中心Zookeeper,这是用linux中的zookeeper。</p>
+<p>1.Zookeeper是一个分布式协调工具,可以实现注册中心功能</p>
+<p>2.关闭Linux服务器防火墙后启动Zookeeper服务器。也可以开启zookeeper的服务端口。</p>
+<p>3.Zookeeper服务器取代Eureka服务器,zk作为服务注册中心</p>
+<p>服务提供者</p>
+<p>1.新建cloud-provider-payment8004</p>
+<p>pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud2020<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.atguigu.springcloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud-provider-payment8004<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"></span><br><span class="line">     <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">         <span class="comment">&lt;!--springBoot整合zookeeper客户端--&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-zookeeper-discovery<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="comment">&lt;!--公用模块--&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.atguigu.springcloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud-api-commons<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;project.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">         <span class="comment">&lt;!--日常通用jar包--&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>application.yml文件</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8004</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-provider-payment</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">zookeeper:</span></span><br><span class="line">      <span class="attr">connect-string:</span> <span class="number">192.168</span><span class="number">.80</span><span class="number">.133</span><span class="string">:2181</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>主启动类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span>     <span class="comment">//这是zookeeper或consul在加入到服务中心时候的注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PaymentMain8004</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(PaymentMain8004.class,args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Controller—HelloZK</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger= LoggerFactory.getLogger(HelloZK.class);</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String CONNECTSTRING=<span class="string">&quot;192.168.80.133:2181&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String PATH=<span class="string">&quot;/test&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> SESSION_TIMEOUT=<span class="number">50</span>*<span class="number">1000</span>;</span><br></pre></td></tr></table></figure>
+
+<p>步骤一：开启ZooKeeper  获取实例对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ZooKeeper <span class="title">startZK</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> ZooKeeper(CONNECTSTRING, SESSION_TIMEOUT, <span class="keyword">new</span> Watcher() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent watchedEvent)</span> </span>&#123;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤二：创建一个Znode节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createZnode</span><span class="params">(ZooKeeper zk,String nodePath,String nodeValue)</span> <span class="keyword">throws</span> KeeperException, InterruptedException </span>&#123;</span><br><span class="line">       zk.create(nodePath, nodeValue.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤三：获取一个Znode节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public String getZnode(ZooKeeper zk,String nodePath) throws KeeperException, InterruptedException &#123;</span><br><span class="line">      String result&#x3D;null;</span><br><span class="line">      byte[] data &#x3D; zk.getData(nodePath, false, new Stat());</span><br><span class="line">      result&#x3D;new String(data);</span><br><span class="line">      return result;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤四：关闭ZooKeeper 关闭实例对象流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopZK</span><span class="params">(ZooKeeper zk)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(zk != <span class="keyword">null</span>)&#123;</span><br><span class="line">        zk.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>步骤五：主程序</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException, KeeperException </span>&#123;</span><br><span class="line">       HelloZK hello = <span class="keyword">new</span> HelloZK();</span><br><span class="line">       ZooKeeper zk = hello.startZK();</span><br><span class="line">       Thread.sleep(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">       <span class="comment">//判断当前节点下有没有这个名称的路径</span></span><br><span class="line">       <span class="keyword">if</span>(zk.exists(PATH, <span class="keyword">false</span>) == <span class="keyword">null</span>)&#123;</span><br><span class="line">           System.out.println(<span class="string">&quot;**********&quot;</span>);</span><br><span class="line">           <span class="comment">//没有就创建</span></span><br><span class="line">           hello.createZnode(zk,PATH,<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">           String resultValue = hello.getZnode(zk, PATH);</span><br><span class="line">           System.out.println(<span class="string">&quot;*****resultValue:&quot;</span>+resultValue);</span><br><span class="line">           logger.info(<span class="string">&quot;*****resultValue:&quot;</span>+resultValue);</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="comment">//有就获取这个值</span></span><br><span class="line">           System.out.println(<span class="string">&quot;*****i have this node&quot;</span>);</span><br><span class="line">           logger.info(<span class="string">&quot;*****i have this node&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       hello.stopZK(zk);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>​            启动8004注册进zookeeper:</p>
+<p>1.启动zk—-zkServer.sh start .</p>
+<p>2.验证测试: <a target="_blank" rel="noopener" href="http://localhost:8004/payment/zk">http://localhost:8004/payment/zk</a></p>
+<p>3.获得json串后用在线工具查看试试</p>
+<p>思考:服务节点是临时节点还是持久节点?   临时节点</p>
+<p>服务消费者<br>新建cloud-consumerzk-order80</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud2020<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.atguigu.springcloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud-consumerzk-order80<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--公用模块--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.atguigu.springcloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cloud-api-commons<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;project.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--springBoot整合zookeeper客户端--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-zookeeper-discovery<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-consumer-order</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">zookeeper:</span></span><br><span class="line">      <span class="attr">connect-string:</span> <span class="number">192.168</span><span class="number">.80</span><span class="number">.133</span><span class="string">:2181</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderZKMain80</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(OrderZKMain80.class,args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//消费端  使用RestTemplate</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationContextConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@LoadBalanced</span>  <span class="comment">// 负载均衡</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RestTemplate <span class="title">getRestTemplate</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderZKController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//public static final String PAYMENT_URL=&quot;http://localhost:8001&quot;;</span></span><br><span class="line">    <span class="comment">//直接调用微服务的名称</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String INVOKE_URL=<span class="string">&quot;http://cloud-provider-payment&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/consumer/payment/zk&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">paymentInfo</span><span class="params">()</span></span>&#123;</span><br><span class="line">         String result=restTemplate.getForObject(INVOKE_URL+<span class="string">&quot;/payment/zk&quot;</span>,String.class);</span><br><span class="line">         <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>验证测试:</p>
+<p><img src="../../AppData/Roaming/Typora/typora-user-images/image-20201029223724878.png" alt="image-20201029223724878"></p>
+<p>访问测试地址:  <a target="_blank" rel="noopener" href="http://localhost/consumer/payment/zk">http://localhost/consumer/payment/zk</a></p>
+<p>总结：</p>
+<p>学习链接：</p>
+<p>​     Zookeeper基础命令操作:      <a target="_blank" rel="noopener" href="https://blog.csdn.net/dandandeshangni/article/details/80558383">https://blog.csdn.net/dandandeshangni/article/details/80558383</a>  </p>
+<p>​     ZooKeeper的Znode剖析:      <a target="_blank" rel="noopener" href="https://blog.csdn.net/lihao21/article/details/51810395">https://blog.csdn.net/lihao21/article/details/51810395</a></p>
+<p>​     ZooKeeper概念详解:              <a target="_blank" rel="noopener" href="https://blog.csdn.net/jiahao1186/article/details/82633588">https://blog.csdn.net/jiahao1186/article/details/82633588</a></p>
+<p>​     Zookeeper四字命令:              <a target="_blank" rel="noopener" href="https://blog.csdn.net/u013673976/article/details/47279707">https://blog.csdn.net/u013673976/article/details/47279707</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>可以打赏了哦</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="答案 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="答案 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+              <a href="/tags/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" rel="tag"># 服务注册中心</a>
+              <a href="/tags/Zookeeper/" rel="tag"># Zookeeper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/10/27/2020-10-22-Centos-7-%E5%AE%89%E8%A3%85Mysql-8.0+%E7%89%88%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="prev" title="">
+                  <i class="fa fa-chevron-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Hystrix-%E7%86%94%E6%96%AD%E5%99%A8/" rel="next" title="springcloud之 Hystrix 熔断器">
+                  springcloud之 Hystrix 熔断器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">答案</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="本站访问人数 fa fa-user 人次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="//cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","app_key":"KYIdQwqhQdxBNnuSYz8oyyoL","server_url":null,"security":true};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+  
+
+  
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: "/2020/10/29/title%20%20springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%20Zookeeper/",
+    }, {"enable":true,"appId":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","appKey":"KYIdQwqhQdxBNnuSYz8oyyoL","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":false,"serverURLs":null,"enableQQ":false,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":105,"height":180},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"showanswer.github.io","root":"/","scheme":"Gemini","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+
+  <meta name="description" content="什么是Ribbon 官网资料：  https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;ribbon&#x2F;wiki&#x2F;Getting-Started。 这里要说的是：Ribbon目前也进入维护模式，所以我们要选择一个未来替换方案。  RestTemplate和Ribbon相结合Ribbon在Netflix组件是非常重要的一个组件，在Zuul中使用Ribbon做负载均衡，以及Feign组件的结合等。在S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springcloud之 Ribbon 负载均衡调用">
+<meta property="og:url" content="http://showanswer.github.io/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Ribbon-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E7%94%A8/index.html">
+<meta property="og:site_name" content="showanswer">
+<meta property="og:description" content="什么是Ribbon 官网资料：  https:&#x2F;&#x2F;github.com&#x2F;Netflix&#x2F;ribbon&#x2F;wiki&#x2F;Getting-Started。 这里要说的是：Ribbon目前也进入维护模式，所以我们要选择一个未来替换方案。  RestTemplate和Ribbon相结合Ribbon在Netflix组件是非常重要的一个组件，在Zuul中使用Ribbon做负载均衡，以及Feign组件的结合等。在S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="file://C:/Users/%E5%A6%82%E6%9E%9Canswer/Pictures/Camera%20Roll/springcloud.png?lastModify=1603945700?lastModify=1604034854">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030160435195.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030160555292.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161210341.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161238681.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161244347.png">
+<meta property="og:image" content="https://img-bbs.csdn.net/upload/202010/09/1602209232_949171.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161511313.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161528512.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161637890.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161646224.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161924220.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161952206.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030161957013.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030162535863.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030163041387.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030163054717.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030163106739.png">
+<meta property="og:image" content="http://showanswer.github.io/2020/10/Pictures/images/ribbon%E6%9B%B4%E6%8D%A2%E7%AE%97%E6%B3%95%E7%9B%AE%E5%BD%95.jpg">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030163358039.png">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/ribbon的随机算法设置.jpg">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/ribbon更换算法主启动类设置.jpg">
+<meta property="og:image" content="c:/Users/如果answer/Pictures/images/ribbon算法接口.jpg">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030164351982.png">
+<meta property="og:image" content="c:/Users/如果answer/AppData/Roaming/Typora/typora-user-images/image-20201030170645649.png">
+<meta property="article:published_time" content="2020-10-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-10-30T09:10:02.691Z">
+<meta property="article:author" content="答案">
+<meta property="article:tag" content="springcloud">
+<meta property="article:tag" content="Ribbon">
+<meta property="article:tag" content="服务调用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="file://C:/Users/%E5%A6%82%E6%9E%9Canswer/Pictures/Camera%20Roll/springcloud.png?lastModify=1603945700?lastModify=1604034854">
+
+
+<link rel="canonical" href="http://showanswer.github.io/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Ribbon-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E7%94%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>springcloud之 Ribbon 负载均衡调用 | showanswer</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/showanswer" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">showanswer</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFRibbon"><span class="nav-number">1.</span> <span class="nav-text">什么是Ribbon</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#RestTemplate%E5%92%8CRibbon%E7%9B%B8%E7%BB%93%E5%90%88"><span class="nav-number">1.0.0.0.1.</span> <span class="nav-text">RestTemplate和Ribbon相结合</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Ribbon%E8%83%BD%E5%B9%B2%E4%BB%80%E4%B9%88"><span class="nav-number">1.0.1.</span> <span class="nav-text">Ribbon能干什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Ribbon%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%BC%94%E7%A4%BA%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">Ribbon负载均衡演示：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">引入依赖方式：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Ribbon%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6IRule"><span class="nav-number">1.0.3.</span> <span class="nav-text">Ribbon核心组件IRule</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="答案"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">答案</p>
+  <div class="site-description" itemprop="description">stay simple,stay naive</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/showanswer" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;showanswer" rel="noopener" target="_blank"><i class="GitHub fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/showanswer" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;showanswer" rel="noopener" target="_blank"><i class="Gitee fa-fw"></i>Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/343755857" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;343755857" rel="noopener" target="_blank"><i class="bilibili fa-fw"></i>bilibili</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://showanswer.github.io/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Ribbon-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="答案">
+      <meta itemprop="description" content="stay simple,stay naive">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="showanswer">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          springcloud之 Ribbon 负载均衡调用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2020-10-30 00:00:00 / 修改时间：17:10:02" itemprop="dateCreated datePublished" datetime="2020-10-30T00:00:00+08:00">2020-10-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Ribbon-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E7%94%A8/" class="post-meta-item leancloud_visitors" data-flag-title="springcloud之 Ribbon 负载均衡调用" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Ribbon-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Ribbon-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E7%94%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="file://C:/Users/%E5%A6%82%E6%9E%9Canswer/Pictures/Camera%20Roll/springcloud.png?lastModify=1603945700?lastModify=1604034854" alt="springcloud"></p>
+<h2 id="什么是Ribbon"><a href="#什么是Ribbon" class="headerlink" title="什么是Ribbon"></a>什么是Ribbon</h2><p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030160435195.png" alt="image-20201030160435195"></p>
+<p>官网资料：  <a target="_blank" rel="noopener" href="https://github.com/Netflix/ribbon/wiki/Getting-Started%E3%80%82">https://github.com/Netflix/ribbon/wiki/Getting-Started。</a></p>
+<p>这里要说的是：Ribbon目前也进入维护模式，所以我们要选择一个未来替换方案。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030160555292.png" alt="image-20201030160555292"></p>
+<h6 id="RestTemplate和Ribbon相结合"><a href="#RestTemplate和Ribbon相结合" class="headerlink" title="RestTemplate和Ribbon相结合"></a>RestTemplate和Ribbon相结合</h6><p>Ribbon在Netflix组件是非常重要的一个组件，在Zuul中使用Ribbon做负载均衡，以及Feign组件的结合等。在Spring Cloud 中，作为开发中，做的最多的可能是将RestTemplate和Ribbon相结合，你可能会这样写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RibbonConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@LoadBalanced</span></span><br><span class="line">    <span class="function">RestTemplate <span class="title">restTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>消费另外一个的服务的接口，差不多是这样的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RibbonService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    RestTemplate restTemplate;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hi</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> restTemplate.getForObject(<span class="string">&quot;http://eureka-client/hi?name=&quot;</span>+name,String.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在之前的服务注册中心中，我们也用到了RestTemplate。当在负载均衡时，使用了 @LoadBalanced注解。</p>
+<h4 id="Ribbon能干什么"><a href="#Ribbon能干什么" class="headerlink" title="Ribbon能干什么"></a>Ribbon能干什么</h4><p> LB(负载均衡)。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161210341.png" alt="image-20201030161210341"></p>
+<p>集中式LB和进程内LB。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161238681.png" alt="image-20201030161238681"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161244347.png" alt="image-20201030161244347"></p>
+<p><img src="https://img-bbs.csdn.net/upload/202010/09/1602209232_949171.png" alt="img"></p>
+<p>前面我们讲解过了80通过轮询负载访问8001/8002，总之一句话：负载均衡+RestTemplate调用。</p>
+<h4 id="Ribbon负载均衡演示："><a href="#Ribbon负载均衡演示：" class="headerlink" title="Ribbon负载均衡演示："></a>Ribbon负载均衡演示：</h4><p>架构说明：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161511313.png" alt="image-20201030161511313"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161528512.png" alt="image-20201030161528512"></p>
+<p>总结: Ribbon其实就是一个软负载均衡的客户端组件,  他可以和其他所需请求的客户端结合使用,和eureka结合只是其中一个实例。</p>
+<h5 id="引入依赖方式："><a href="#引入依赖方式：" class="headerlink" title="引入依赖方式："></a>引入依赖方式：</h5><p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161637890.png" alt="image-20201030161637890"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161646224.png" alt="image-20201030161646224"></p>
+<p>我们上面也说了，ribbon基本上就是提供 <strong>负载均衡功能与RestTemplate</strong>。</p>
+<p>这里我们 说 RestTemplate的使用。</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161924220.png" alt="image-20201030161924220"></p>
+<p><em>getForObject方法  / getForEntity方法：</em></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161952206.png" alt="image-20201030161952206"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030161957013.png" alt="image-20201030161957013"></p>
+<p>详细用法可以参照：<a target="_blank" rel="noopener" href="https://blog.csdn.net/jinjiniao1/article/details/100849237">https://blog.csdn.net/jinjiniao1/article/details/100849237</a></p>
+<h4 id="Ribbon核心组件IRule"><a href="#Ribbon核心组件IRule" class="headerlink" title="Ribbon核心组件IRule"></a>Ribbon核心组件IRule</h4><p>IRule:根据特定算法从服务列表中选取一个要访问的服务：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030162535863.png" alt="image-20201030162535863"></p>
+<ul>
+<li>com.netflix.loadbalancer.RoundRobinRule   轮询</li>
+<li>com.netflix.loadbalancer.RandomRule     随机</li>
+<li>com.netflix.loadbalancer.RetryRule      先按照RoundRobinRule的策略获取服务,如果获取服务失败则在指定时间内进行重试,获取可用的服务</li>
+<li>WeightedResponseTimeRule        对RoundRobinRule的扩展,响应速度越快的实例选择权重越多大,越容易被选择</li>
+<li>BestAvailableRule             会先过滤掉由于多次访问故障而处于断路器跳闸状态的服务,然后选ZoneAvoidanceRule 择一个并发量最小的服务</li>
+<li>AvailabilityFilteringRule     先过滤掉故障实例,再选择并发较小的实例</li>
+<li>ZoneAvoidanceRule        默认规则,复合判断server所在区域的性能和server的可用性选择服务器</li>
+</ul>
+<p><strong>这里ribbon默认的算法时轮询算法，我们也可以设置为其他算法</strong></p>
+<p>如何替换IRule的默认的算法 – 轮询算法为随机算法：</p>
+<p>这里我门修改下我们之前写的代码：修改cloud-consumer-order80</p>
+<p>注意配置的细节：</p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030163041387.png" alt="image-20201030163041387"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030163054717.png" alt="image-20201030163054717"></p>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030163106739.png" alt="image-20201030163106739"></p>
+<p><em>1. 新建package为myrule ,上面包下新建MySelfRule规则类: 创建：com.atguigu.myrule</em>    </p>
+<p><img src="../../Pictures/images/ribbon%E6%9B%B4%E6%8D%A2%E7%AE%97%E6%B3%95%E7%9B%AE%E5%BD%95.jpg" alt="ribbon更换算法目录"></p>
+<ol start="2">
+<li>设置算法为随机算法，并且加入springboot容器中  – @Bean</li>
+</ol>
+<p><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030163358039.png" alt="image-20201030163358039"></p>
+<ol start="3">
+<li>这里我们在返回我们的配置类做修改： 我们要去掉 @LoadBalanced 。这个注解就是代表使用轮询算法。</li>
+</ol>
+<p><img src="C:\Users\如果answer\Pictures\images\ribbon的随机算法设置.jpg" alt="ribbon的随机算法设置"></p>
+<ol start="4">
+<li><p>主启动类添加@RibbonClient</p>
+<p><img src="C:\Users\如果answer\Pictures\images\ribbon更换算法主启动类设置.jpg" alt="ribbon更换算法主启动类设置"></p>
+</li>
+<li><p>测试:  <a target="_blank" rel="noopener" href="http://localhost/consumer/payment/get/2">http://localhost/consumer/payment/get/2</a> </p>
+</li>
+<li><p>效果：这里应该就是随机出现端口，而不是在轮流出现了。</p>
+</li>
+</ol>
+<p><strong>这里我们也可以 自定义Ribbon负载均衡算法 。</strong></p>
+<p>这里我们可以看下ribbon的默认算法的实现类，在仿写一下类。</p>
+<p><img src="C:\Users\如果answer\Pictures\images\ribbon算法接口.jpg" alt="ribbon算法接口"></p>
+<p>![ribbon 自带算法的实现类](C:\Users\如果answer\Pictures\images\ribbon 自带算法的实现类.jpg)</p>
+<p>这里查看 RoundRobinRule。查看轮询算法的实现。</p>
+<p>自定义轮询算法的原理：<br><img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030164351982.png" alt="image-20201030164351982"></p>
+<p>这里 我们也自定义一个ribbon算法的接口LoadBalancer，然后可以写个实现类，完成轮询算法  MyLB。</p>
+<p>![ribbon 自定义算法接口](C:\Users\如果answer\Pictures\images\ribbon 自定义算法接口.jpg)</p>
+<p>我们这里 要提供当前已经在注册中心注册过的服务器的数量。然后编写MyLB实现类，完成自定义轮询算法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyLB</span> <span class="keyword">implements</span> <span class="title">LoadBalancer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置一个原子整型参数  作为请求的次数 第几次请求 0 为没有开始请求</span></span><br><span class="line">    <span class="keyword">private</span> AtomicInteger atomicInteger=<span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">//该方法为了获取用户的访问次数   创建自询锁,线程问题</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndIncrement</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="keyword">int</span> current;</span><br><span class="line">         <span class="keyword">int</span> next;</span><br><span class="line">         <span class="keyword">do</span> &#123;</span><br><span class="line">             <span class="comment">// 获取常量值为0 即还没有开始请求</span></span><br><span class="line">             current=<span class="keyword">this</span>.atomicInteger.get();</span><br><span class="line">             <span class="comment">// 获取请求次数  第一次调度即 为1</span></span><br><span class="line">             next=current &gt;= <span class="number">2147483647</span> ? <span class="number">0</span>:current+<span class="number">1</span>;</span><br><span class="line">             <span class="comment">//atomicInteger比较并且设置  current是期望值 atomicInteger的原值和期望值做比较如果为true  就是两者值相同 就更改atomicInteger为next</span></span><br><span class="line">         &#125;<span class="keyword">while</span> (!<span class="keyword">this</span>.atomicInteger.compareAndSet(current,next));</span><br><span class="line">        System.out.println(<span class="string">&quot;******第几次访问次数，次数next:&quot;</span>+next);</span><br><span class="line">        <span class="keyword">return</span> next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> serviceInstances  是总共服务器的数量  不是可用服务器的数量</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>   serviceInstances.get(index)  返回的是第几个服务器</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServiceInstance <span class="title">instance</span><span class="params">(List&lt;ServiceInstance&gt; serviceInstances)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> index= getAndIncrement() % serviceInstances.size();</span><br><span class="line">        <span class="keyword">return</span> serviceInstances.get(index);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改controller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//注入discoveryClient</span></span><br><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> DiscoveryClient discoveryClient;</span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping(value = &quot;/consumer/payment/lb&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPaymentLB</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//根据指定服务器名称 获取他们的集群数量名称等相关信息</span></span><br><span class="line">        List&lt;ServiceInstance&gt; instances = discoveryClient.getInstances(<span class="string">&quot;CLOUD-PAYMENT-SERVICE&quot;</span>);</span><br><span class="line">        <span class="comment">//如果没有这个服务器或者改服务器里的集群数量为0</span></span><br><span class="line">        <span class="keyword">if</span>(instances == <span class="keyword">null</span> || instances.size() &lt;=<span class="number">0</span>)&#123;</span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">         <span class="comment">//调用接口 传递服务器参数信息</span></span><br><span class="line">        ServiceInstance instance = loadBalancer.instance(instances);</span><br><span class="line">        <span class="comment">//获取改服务器的信息 IP地址</span></span><br><span class="line">        URI uri = instance.getUri();</span><br><span class="line">        <span class="keyword">return</span> restTemplate.getForObject(uri+<span class="string">&quot;/payment/lb&quot;</span>,String.class);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<ol>
+<li><p>7001/7002集群启动</p>
+</li>
+<li><p>8001/8002集群启动</p>
+</li>
+<li><p>80订单微服务改造   </p>
+<ol>
+<li><p>ApplicationContextBean去掉注解@LoadBalanced</p>
+</li>
+<li><p>LoadBalancer接口</p>
+</li>
+<li><p>MyLB实现类</p>
+</li>
+<li><p>OrderController</p>
+</li>
+<li><p>访问：<a target="_blank" rel="noopener" href="http://localhost/consumer/payment/lb">http://localhost/consumer/payment/lb</a></p>
+</li>
+</ol>
+</li>
+</ol>
+<p>​      <img src="C:\Users\如果answer\AppData\Roaming\Typora\typora-user-images\image-20201030170645649.png" alt="image-20201030170645649"></p>
+<p>总结：</p>
+<p>Ribbon 自定义负载均衡策略： <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43774824/article/details/86624762">https://blog.csdn.net/weixin_43774824/article/details/86624762</a>   自定义为：   每台机子n次访问。</p>
+<p>深入理解Ribbon之源码解析：<a target="_blank" rel="noopener" href="https://blog.csdn.net/forezp/article/details/74820899">https://blog.csdn.net/forezp/article/details/74820899</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>可以打赏了哦</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="答案 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="答案 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+              <a href="/tags/Ribbon/" rel="tag"># Ribbon</a>
+              <a href="/tags/%E6%9C%8D%E5%8A%A1%E8%B0%83%E7%94%A8/" rel="tag"># 服务调用</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/10/30/2020-10-30-springcloud%E4%B9%8B-config-%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/" rel="prev" title="springcloud之 config 分布式配置中心">
+                  <i class="fa fa-chevron-left"></i> springcloud之 config 分布式配置中心
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/10/30/2020-10-29-springcloud%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-Consul/" rel="next" title="springcloud之服务注册中心 Consul">
+                  springcloud之服务注册中心 Consul <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">答案</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="本站访问人数 fa fa-user 人次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="//cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","app_key":"KYIdQwqhQdxBNnuSYz8oyyoL","server_url":null,"security":true};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+  
+
+  
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: "/2020/10/30/2020-10-30-springcloud%E4%B9%8B-Ribbon-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E7%94%A8/",
+    }, {"enable":true,"appId":"bu2dNIriVoAGmrELrj0VRbir-gzGzoHsz","appKey":"KYIdQwqhQdxBNnuSYz8oyyoL","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":false,"serverURLs":null,"enableQQ":false,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":105,"height":180},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
